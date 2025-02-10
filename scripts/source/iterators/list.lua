@@ -37,7 +37,7 @@ list_iterator = {
     ---@param predicate function Условие
     ---@return t table Таблица отфильтрованных значений
     function (table, predicate)
-        local t, n = {}, 0
+        local t, n = {}, 1
         for k, v in table do 
             if predicate(v) then
                 t[n] = v

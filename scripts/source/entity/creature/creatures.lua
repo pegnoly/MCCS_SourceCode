@@ -21,8 +21,12 @@ Creature =
             function()
                 Creature.Params.Exception(%creature, "is_generatable")
             end)
-            local answer = MCCS_CREATURE_GENERATED_TABLE[creature] and
-                            MCCS_CREATURE_GENERATED_TABLE[creature].is_generatable or MCCS_CREATURE_GENERATED_TABLE[GetCreatureType(creature)].is_generatable
+            local answer
+            if MCCS_CREATURE_GENERATED_TABLE[creature] then
+                answer = MCCS_CREATURE_GENERATED_TABLE[creature].is_generatable
+            else
+                answer = MCCS_CREATURE_GENERATED_TABLE[GetCreatureType(creature)].is_generatable
+            end
             return answer
         end,
 
@@ -295,6 +299,21 @@ Creature =
                 answer = CREATURE_FRAC_KIND
             elseif contains(evil, town) then
                 answer = CREATURE_FRAC_EVIL
+            end
+            return answer
+        end,
+
+        IsUpgrade =
+        function (creature)
+            errorHook(
+            function()
+                Creature.Params.Exception(%creature, "is_upgrade")
+            end)
+            local answer
+            if MCCS_CREATURE_GENERATED_TABLE[creature] then
+                answer = MCCS_CREATURE_GENERATED_TABLE[creature].is_upgrade
+            else
+                answer = MCCS_CREATURE_GENERATED_TABLE[GetCreatureType(creature)].is_upgrade
             end
             return answer
         end
