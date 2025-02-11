@@ -45,5 +45,17 @@ list_iterator = {
             end
         end
         return t
+    end,
+
+    Join = 
+    --- Джойнит две таблицы, которые имеют ключи-числа
+    ---@param t1 table Первая таблица
+    ---@param t2 table Вторая таблица
+    function (t1, t2)
+        local n = len(t1)
+        for k, v in t2 do
+            t1[n] = v
+            n = n + 1
+        end
     end
 }
