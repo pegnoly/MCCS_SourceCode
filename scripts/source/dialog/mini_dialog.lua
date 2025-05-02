@@ -6,15 +6,20 @@ MiniDialog.Sets = {}
 MiniDialog.Paths = {}
 MiniDialog.answer_for_player = {[PLAYER_1] = 6, [PLAYER_2] = 6, [PLAYER_3] = 6, [PLAYER_4] = 6, [PLAYER_5] = 6, [PLAYER_6] = 6, [PLAYER_7] = 6, [PLAYER_8] = 6}
 
+doFile(GetMapDataPath().."dialogs_paths.lua")
+
 MiniDialog.Start =
 function(name, alt_set, player)
-  if not MiniDialog.Sets[name] then
+  player = player or PLAYER_1
+  alt_set = alt_set or "main"
+  --if not MiniDialog.Sets[name] then
     local dialog_file = MiniDialog.Paths[name].."/script.lua"
+    print("Dialog script file: ", dialog_file)
     doFile(dialog_file)
     while not MiniDialog.Sets[name] do
       sleep()
     end
-  end
+  --end
   --
   local steps_count = -1
   for step, _ in MiniDialog.Sets[name] do
@@ -26,8 +31,6 @@ end
 
 MiniDialog.Step =
 function(path, set, curr_step, max_step, alt_set, player)
-  alt_set = alt_set or "main"
-  player = player or PLAYER_1
   local answers = {"/Text/next.txt", "/Text/back.txt"}
   MiniDialog.answer_for_player[player] = 6
   if curr_step == 0 then
@@ -57,7 +60,7 @@ function(path, set, curr_step, max_step, alt_set, player)
   end
   print('<color=red>MiniDialog: <color=green>curr icon is ', icon)
   --print(curr_state, ': ok here???')
-  TalkBoxForPlayers(player, icon, nil,
+  TalkBoxForPlayers(GetPlayerFilter(player), icon, nil,
                  text, nil,
                  'MiniDialog.Callback', 1,
                  nil,

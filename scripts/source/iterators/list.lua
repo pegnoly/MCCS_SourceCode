@@ -57,5 +57,6 @@ list_iterator = {
             t1[n] = v
             n = n + 1
         end
+        return t1
     end
 }
