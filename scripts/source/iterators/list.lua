@@ -56,5 +56,37 @@ list_iterator = {
             n = n + 1
         end
         return t1
+    end,
+
+    MaxBy = 
+    function (t, predicate)
+        local current_max_value = math.nan
+        local current_answer
+        for k, v in t do
+            if k and v then
+                local value = predicate(v)
+                if value and value > current_max_value then
+                    current_max_value = value
+                    current_answer = v
+                end
+            end 
+        end
+        return current_answer
+    end,
+
+    MinBy = 
+    function (t, predicate)
+        local current_min_value = math.huge
+        local current_answer
+        for k, v in t do
+            if k and v then
+                local value = predicate(v)
+                if value and value < current_min_value then
+                    current_min_value = value
+                    current_answer = v
+                end 
+            end
+        end
+        return current_answer
     end
 }
