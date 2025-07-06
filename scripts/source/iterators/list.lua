@@ -36,8 +36,8 @@ list_iterator = {
     ---@return table t Таблица отфильтрованных значений
     function (table, predicate)
         local t, n = {}, 1
-        for k, v in table do 
-            if predicate(v) then
+        for k, v in table do
+            if k and v and predicate(v) then
                 t[n] = v
                 n = n + 1
             end
@@ -88,5 +88,17 @@ list_iterator = {
             end
         end
         return current_answer
+    end,
+
+    ToList =
+    function (t)
+        local answer, n = {}, 1
+        for k, v in t do
+            if k and v then
+                answer[n] = v
+                n = n + 1
+            end
+        end
+        return answer
     end
 }

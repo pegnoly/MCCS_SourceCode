@@ -2,7 +2,7 @@
 ---@param hero string скриптовое имя героя
 ---@param creature CreatureID id существа
 ---@param count integer число существ
----@param slot integer слот в армии (-1 по умолчанию - первый свободный слот)
+---@param slot integer? слот в армии (-1 по умолчанию - первый свободный слот)
 function AddHeroCreatures(hero, creature, count, slot)
 end
 

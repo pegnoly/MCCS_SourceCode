@@ -14,7 +14,7 @@ Object =
       local text = ""
       local arg = %arg
       for i = 1, arg.n do
-        text = text..%arg[i]..", "
+        text = text..arg[i]..", "
       end
       Object.Exception("remove selection: "..text)
     end)

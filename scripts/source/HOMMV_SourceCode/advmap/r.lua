@@ -26,7 +26,7 @@ end
 ---@param hero string скриптовое имя героя
 ---@param creature CreatureID id существа
 ---@param count integer число существ
----@param slot integer слот в армии(-1 по умолчанию - первый подходящий слот)
+---@param slot integer? слот в армии(-1 по умолчанию - первый подходящий слот)
 function RemoveHeroCreatures(hero, creature, count, slot)
 end
 

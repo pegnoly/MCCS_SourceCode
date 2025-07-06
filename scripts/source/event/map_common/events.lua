@@ -37,8 +37,8 @@ function(day)
     if NewDayEvent.listeners_waiting[desc] then
       startThread(
       function ()
+        local desc = %desc
         while 1 do
-          local desc = %desc
           local listeners_done = 0
           local listeners_done_needed = len(NewDayEvent.listeners_waiting[desc])
           for i, listener in NewDayEvent.listeners_waiting[desc] do
@@ -191,8 +191,8 @@ function(hero)
     if AddHeroEvent.listeners_waiting[desc] then
       startThread(
       function ()
+        local desc = %desc
         while 1 do
-          local desc = %desc
           local listeners_done = 0
           local listeners_done_needed = len(AddHeroEvent.listeners_waiting[desc])
           for i, listener in AddHeroEvent.listeners_waiting[desc] do

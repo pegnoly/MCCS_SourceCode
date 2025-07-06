@@ -257,7 +257,7 @@ end
 --- Выдает герою артефакт с возможностью привязки (т.е. сделать артефакт непередаваемым)
 ---@param hero string скриптовое имя героя
 ---@param artifact ArtifactID id артефакта
----@param bind_to_hero boolean привязывать к герою/нет
+---@param bind_to_hero 1|nil привязывать к герою/нет
 function GiveArtefact(hero, artifact, bind_to_hero)
 end
 

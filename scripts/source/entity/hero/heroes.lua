@@ -446,7 +446,7 @@ Hero =
                 local text = ""
                 local arg = %arg
                 for i = 1, arg.n, 2 do
-                text = text.."["..%arg[i].."] = "..%arg[i + 1]..", "
+                text = text.."["..arg[i].."] = "..arg[i + 1]..", "
                 end
                 Hero.CreatureInfo.Exception(%hero, "Adding creatures: "..text)
             end)
