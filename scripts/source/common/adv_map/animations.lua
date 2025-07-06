@@ -36,7 +36,7 @@ Animation =
   ---@param action AnimationActionType тип проигрывания
   ---@param start_delay number стартовая задержка перед проигрыванием
   ---@param play_period number задержка между проигрываниями
-  ---@param is_random_delay boolean использовать конкретную задержку или случайное число из этого промежутка
+  ---@param is_random_delay 1|nil использовать конкретную задержку или случайное число из этого промежутка
   function(group, anims, cond, action, start_delay, play_period, is_random_delay)
     cond = cond or PLAY_CONDITION_SINGLEPLAY
     action = action or NON_ESSENTIAL
@@ -51,9 +51,16 @@ Animation =
       for i, actor in Animation.Groups[group].actors do
         startThread(
         function()
-          local actor, anims, region, action, start_delay, play_period, is_random_delay = %actor, %anims, Animation.Groups[%group].region, %action, %start_delay, %play_period, %is_random_delay
+          local group = %group
+          local actor = %actor
+          local anims = %anims 
+          local region = Animation.Groups[group].region 
+          local action = %action 
+          local start_delay = %start_delay 
+          local play_period = %play_period 
+          local is_random_delay = %is_random_delay
           while 1 do
-            while length(GetObjectsInRegion(region, 'HERO')) > 0 and not Animation.AbortedThreads[%group] do
+            while length(GetObjectsInRegion(region, 'HERO')) > 0 and not Animation.AbortedThreads[group] do
               sleep(random(start_delay))
               PlayObjectAnimation(actor, Random.FromTable(anims), action)
               local delay = is_random_delay and (random(play_period) + 10) or play_period
@@ -67,9 +74,16 @@ Animation =
       for i, actor in Animation.Groups[group].actors do
         startThread(
         function()
-          local actor, anims, region, action, start_delay, play_period, is_random_delay = %actor, %anims, Animation.Groups[%group].region, %action, %start_delay, %play_period, %is_random_delay
+          local group = %group
+          local actor = %actor
+          local anims = %anims 
+          local region = Animation.Groups[group].region 
+          local action = %action 
+          local start_delay = %start_delay 
+          local play_period = %play_period 
+          local is_random_delay = %is_random_delay
           --sleep(random(start_delay))
-          while IsObjectExists(actor) and not Animation.AbortedThreads[%group] do
+          while IsObjectExists(actor) and not Animation.AbortedThreads[group] do
             PlayObjectAnimation(actor, Random.FromTable(anims), action)
             local delay = is_random_delay == 1 and (random(play_period) + 10) or play_period
             sleep(delay)

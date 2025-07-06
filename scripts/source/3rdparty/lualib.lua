@@ -33,13 +33,9 @@ function table.pack(...)
 end
 
 function table.unpack(t, i, j)
-	--print("t: ", t)
 	i = (i or 1) - 1
-	--print("i: ", i) 
 	j = j or table.getn(t)
-	--print("j: ", j)
 	local n = j-i
-	--print("n: ", n)
 	if n <= 0 then
 		return
 	elseif n == 1 then

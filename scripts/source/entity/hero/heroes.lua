@@ -444,7 +444,8 @@ Hero =
             errorHook(
             function()
                 local text = ""
-                for i = 1, %arg.n, 2 do
+                local arg = %arg
+                for i = 1, arg.n, 2 do
                 text = text.."["..%arg[i].."] = "..%arg[i + 1]..", "
                 end
                 Hero.CreatureInfo.Exception(%hero, "Adding creatures: "..text)
@@ -474,8 +475,9 @@ Hero =
             errorHook(
             function()
                 local text = ""
-                for i = 1, %arg.n, 3 do
-                    text = text.."town - "..%arg[i].." : ["..%arg[i + 1].."] = "..%arg[i + 2]..", "
+                local arg = %arg
+                for i = 1, arg.n, 3 do
+                    text = text.."town - "..arg[i].." : ["..arg[i + 1].."] = "..arg[i + 2]..", "
                 end
                 Hero.CreatureInfo.Exception(%hero, "Adding creatures by tiers: "..text)
             end)

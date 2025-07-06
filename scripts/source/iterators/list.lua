@@ -1,9 +1,8 @@
 list_iterator = {
     Any =
-    ---comment
     ---@param table table Таблица, для которой проверяется условие
     ---@param predicate function Условие
-    ---@return ok boolean Хотя бы для одного элемента выполняется условие?
+    ---@return nil|1 ok Хотя бы для одного элемента выполняется условие?
     function (table, predicate)
         --print("Iterator any: table - ", table)
         local result = nil
@@ -18,10 +17,9 @@ list_iterator = {
     end,
 
     All = 
-    ---comment
     ---@param table table Таблица, для которой проверяется условие
     ---@param predicate function Условие
-    ---@return ok boolean Условие выполняется для всех элементов?
+    ---@return nil|1 ok Условие выполняется для всех элементов?
     function (table, predicate)
         for k, v in table do
             if not predicate(v) then
@@ -35,7 +33,7 @@ list_iterator = {
     ---comment
     ---@param table table Таблица для фильтра значений
     ---@param predicate function Условие
-    ---@return t table Таблица отфильтрованных значений
+    ---@return table t Таблица отфильтрованных значений
     function (table, predicate)
         local t, n = {}, 1
         for k, v in table do 

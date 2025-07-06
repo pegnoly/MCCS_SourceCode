@@ -1,0 +1,24 @@
+{
+    "cSpell.words": [
+        "advmap",
+        "ainurel"
+    ],
+    "Lua.diagnostics.globals": [
+        "inventory",
+        "MCCS_CREATURE_GENERATED_TABLE"
+    ],
+    "Lua.diagnostics.disable": [
+        "exp-in-action",
+        "unknown-symbol",
+        "miss-symbol",
+        "args-after-dots",
+        "miss-exp",
+        "lowercase-global"
+    ],
+    "[plaintext]": {
+        "editor.unicodeHighlight.ambiguousCharacters": false,
+        "editor.unicodeHighlight.invisibleCharacters": false,
+        "files.encoding": "utf16le",
+        "editor.wordWrap": "on"
+    }
+}

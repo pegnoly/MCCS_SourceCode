@@ -17,7 +17,9 @@ Touch =
         startThread(
         function()
           sleep()
-          SetMonsterSelectionType(%monster, %selection)
+          local monster = %monster 
+          local selection= %selection
+          SetMonsterSelectionType(monster, selection)
         end)
       end
       if name then
@@ -28,9 +30,9 @@ Touch =
     DisableObject = 
     --- Выключает объект на карте приключений
     ---@param object string скриптовое имя объекта
-    ---@param cursor ObjectInteractionCursorType тип курсора при наведении на объект
-    ---@param name string путь к файлу с новым именем объекта
-    ---@param desc string путь к файлу с новым описанием объекта
+    ---@param cursor ObjectInteractionCursorType? тип курсора при наведении на объект
+    ---@param name string? путь к файлу с новым именем объекта
+    ---@param desc string? путь к файлу с новым описанием объекта
     function(object, cursor, name, desc)
       SetObjectEnabled(object, nil)
       if cursor then
@@ -52,32 +54,33 @@ Touch =
       end
       startThread(
       function()
-        while IsObjectEnabled(%hero) do
+        local hero = %hero
+        while IsObjectEnabled(hero) do
           sleep()
         end
-        print('object: ', %hero)
+        --print('object: ', hero)
         local hero_in_town
-        while not IsObjectEnabled(%hero) do
-          local town = GetHeroTown(%hero)
+        while not IsObjectEnabled(hero) do
+          local town = GetHeroTown(hero)
           if town and not hero_in_town then
-            print('town: ', town)
+            --print('town: ', town)
             hero_in_town = 1
             local town_enabled = IsObjectEnabled(town)
             if town_enabled then
               Touch.DisableObject(town)
-              print(town, ' disabled')
+              --print(town, ' disabled')
             end
-            for desc, func in Touch.GetHandlersTable(%hero).funcs do
+            for desc, func in Touch.GetHandlersTable(hero).funcs do
               Touch.SetFunction(town, desc, func)
             end
-            while GetHeroTown(%hero) == town do
+            while GetHeroTown(hero) == town do
               sleep()
             end
             hero_in_town = nil
             if town_enabled then
               SetObjectEnabled(town, 1)
             end
-            for desc, func in Touch.GetHandlersTable(%hero).funcs do
+            for desc, func in Touch.GetHandlersTable(hero).funcs do
               Touch.RemoveFunction(town, desc)
             end
           end
@@ -141,7 +144,7 @@ Touch =
     --- Определяет, есть ли на объекте функция
     ---@param object string скриптовое имя объекта
     ---@param desc string описание функции
-    ---@return boolean has имеет функцию/нет
+    ---@return 1|nil has имеет функцию/нет
     function(object, desc)
       local table = Touch.GetHandlersTable(object)
       if not table then
@@ -158,7 +161,7 @@ Touch =
     HasAnyFunction =
     --- Определяет, есть ли на объекте хотя бы одна функция
     ---@param object string скриптовое имя объекта
-    ---@return boolean has имеется функция/нет
+    ---@return nil|1 has имеется функция/нет
     function(object)
       local table = Touch.GetHandlersTable(object)
       if not table then

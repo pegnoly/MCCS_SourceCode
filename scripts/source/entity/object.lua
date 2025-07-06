@@ -12,7 +12,8 @@ Object =
     errorHook(
     function()
       local text = ""
-      for i = 1, %arg.n do
+      local arg = %arg
+      for i = 1, arg.n do
         text = text..%arg[i]..", "
       end
       Object.Exception("remove selection: "..text)
@@ -31,7 +32,8 @@ Object =
     errorHook(
     function()
        local text = ""
-       for i, obj in %tbl do
+       local tbl = %tbl
+       for i, obj in tbl do
          text = text..obj..", "
        end
        Object.Exception("remove table: "..text)
