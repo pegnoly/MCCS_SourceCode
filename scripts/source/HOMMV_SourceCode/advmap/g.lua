@@ -267,6 +267,12 @@ end
 function GiveBorderguardKey(player, key)
 end
 
+--- Gives experience to the hero
+---@param hero string hero id
+---@param exp number amount of experience
+function GiveExp(hero, exp)
+end
+
 --- Даёт герою бонус на следующую битву
 ---@param hero string скриптовое имя героя
 ---@param bonus HeroBattleBonusType тип бонуса

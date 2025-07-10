@@ -60,8 +60,16 @@ end
 
 --- Выясняет, управляется ли игрок искусственным интеллектом (возвращает 1, если игрок - AI, 0 - если человек)
 ---@param player PlayerID id игрока
----@return boolean is_ai ии игрок/нет
+---@return 1|nil is_ai ии игрок/нет
 function IsAIPlayer(player)
+    return 1
+end
+
+--- Checks is there a turn of given player
+---@param player PlayerID player id
+---@return 1|nil is_current is player current or not
+function IsPlayerCurrent(player)
+    return 1
 end
 
 --- Определяет, заблокирован ли регион для прохождения героями определенного игрока
