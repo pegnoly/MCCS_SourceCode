@@ -149,4 +149,19 @@ end
 ---@param unit string скриптовое имя юнита
 ---@return CombatSide side сторона боя
 function GetUnitSide(unit)
+    return ATTACKER
+end
+
+--- Возвращает текущий уровень гнева крови для юнита
+---@param unit string скриптовое имя юнита
+---@return integer level уровень гнева
+function GetRageLevel(unit)
+    return -1
+end
+
+--- Возвращает текущее число очков гнева крови для юнита
+---@param unit string скриптовое имя юнита
+---@return integer points число очков гнева
+function GetRagePoints(unit)
+    return -1
 end

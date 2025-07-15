@@ -157,7 +157,8 @@ end
 ---@param player PlayerID id игрока
 ---@param type ResourceType тип ресурса
 ---@param amount integer число ресурса
-function SetPlayerResource(player, type, amount)
+---@param flag any если указан, то интерфейс игры отобразит получение ресурса
+function SetPlayerResource(player, type, amount, flag)
 end
 
 --- Устанавливает стартовое количество ресурсов у игрока

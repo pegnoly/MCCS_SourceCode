@@ -11,6 +11,15 @@ end
 function Play3DSound(path, x, y, floor)
 end
 
+--- Проигрывает 3D-звук для конкретного игрока
+---@param filter PlayerFilter фильтр игрока
+---@param path string путь к файлу звука в ресурсах игры
+---@param x number координата X
+---@param y number координата Y
+---@param floor MapLevel уровень карты
+function Play3DSoundForPlayers(filter, path, x, y, floor)
+end
+
 --- Проигрывает анимацию на объекте карты
 ---@param object string скриптовое имя объекта
 ---@param anim string имя анимации

@@ -33,6 +33,13 @@ end
 function GetCurrentPlayer()
 end
 
+--- Определяет фильтр игрока в сетевой игре
+---@param player PlayerID id игрока
+---@return PlayerFilter filter фильтр
+function GetPlayerFilter(player)
+    return PLAYERFLT_ALL
+end
+
 --- Возвращает текущее игровое время (день, неделю, месяц или день недели)
 ---@param type DateType тип даты
 ---@return integer date игровая дата
@@ -165,6 +172,7 @@ end
 ---@param player PlayerID id игрока
 ---@return integer count число энергии
 function GetPlayerNecroEnergy(player)
+    return 0
 end
 
 --- Возвращает расу игрока по его идентификатору
@@ -252,6 +260,7 @@ end
 ---@param town string скриптовое имя города
 ---@return TownType race раса города
 function GetTownRace(town)
+    return TOWN_NO_TYPE
 end
 
 --- Выдает герою артефакт с возможностью привязки (т.е. сделать артефакт непередаваемым)
