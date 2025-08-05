@@ -196,6 +196,33 @@ function MCCS_StartCombat(hero, enemy, stack_count, stacks_info, is_diff_indepen
   return result
 end
 
+--- Инициирует осаду города, возвращает исход осады
+---@param hero string скриптовое имя героя
+---@param town string скриптовое имя города
+---@param arena string? путь к файлу арены(по умолчанию отсутствует, что означает, что бой будет на стандартной городской)
+---@return 1|nil did_win результат осады
+function MCCS_SiegeTown(hero, town, arena)
+  arena = arena or nil
+  local fight_ID = GetLastSavedCombatIndex()
+  local floor_flag
+  -- если заданы соотв. параметры, может менять освещение на арене
+  if IsInDungeon(hero) and COMBAT_LIGHTS then
+    SetCombatLight(COMBAT_LIGHTS.UGROUND)
+    floor_flag = 1
+  end
+  if arena then
+    SiegeTown(hero, town, arena)
+  else
+    SiegeTown(hero, town)
+  end
+  while GetLastSavedCombatIndex() == fight_ID do sleep() end
+  if floor_flag then
+    SetCombatLight(COMBAT_LIGHTS.CURRENT)
+  end
+  local result = IsHeroAlive(hero)
+  return result
+end
+
 --- Возвращает объекты заданного типа в регионе
 ---@param region string имя региона
 ---@param type string тип объектов

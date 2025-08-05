@@ -116,3 +116,9 @@ end
 function IsTutorialMessageBoxOpen()
 end
 
+--- Возвращает 1, если герой находится в подземелье
+---@param hero string скриптовое имя героя
+---@return 1|nil is_in_dungeon находится в подземелье/нет
+function IsInDungeon(hero)
+    return nil
+end

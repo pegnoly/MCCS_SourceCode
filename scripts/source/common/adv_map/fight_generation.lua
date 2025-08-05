@@ -42,11 +42,10 @@ FightGenerator = {
         return {stacks_count = stacks_count, stacks_info = stacks_info}
     end,
 
-    GenerateHeroSetupData = 
+    GenerateStacksData = 
     function (data)
         local diff = GetDifficulty()
         local week = GetDate(WEEK)
-
         local stacks_data, n = {}, 1
         for i, stack_type in data.stack_count_generation_logic do
             local creature = data.army_getters[i]()
@@ -67,6 +66,15 @@ FightGenerator = {
             stacks_data[n] = {creature = creature, count = count}
             n = n + 1
         end
+
+        return stacks_data
+    end,
+
+    GenerateHeroSetupData = 
+    function (data)
+        local diff = GetDifficulty()
+        local week = GetDate(WEEK)
+        local stacks_data = FightGenerator.GenerateStacksData(data)
         --
         local artifacts_data, a_n = {}, 1
         if data.required_artifacts and length(data.required_artifacts) > 0 then
@@ -148,5 +156,12 @@ FightGenerator = {
                 GiveArtefact(hero, art, 1)
             end
         end)
+    end,
+
+    ProcessObjectSetup = 
+    function (object, data)
+        for _, stack in data do
+            AddObjectCreatures(object, stack.creature, stack.count)
+        end
     end
 }
