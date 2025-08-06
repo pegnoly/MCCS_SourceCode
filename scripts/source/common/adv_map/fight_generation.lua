@@ -75,6 +75,9 @@ FightGenerator = {
         local diff = GetDifficulty()
         local week = GetDate(WEEK)
         local stacks_data = FightGenerator.GenerateStacksData(data)
+        if not data.artifacts_base_costs then
+            return { stacks_data = stacks_data }
+        end
         --
         local artifacts_data, a_n = {}, 1
         if data.required_artifacts and length(data.required_artifacts) > 0 then
@@ -148,14 +151,16 @@ FightGenerator = {
             end
         end)
 
-        startThread(
-        function ()
-            local artifacts_data = %data.artifacts_data
-            local hero = %hero
-            for _, art in artifacts_data do
-                GiveArtefact(hero, art, 1)
-            end
-        end)
+        if data.artifacts_data then
+            startThread(
+            function ()
+                local artifacts_data = %data.artifacts_data
+                local hero = %hero
+                for _, art in artifacts_data do
+                    GiveArtefact(hero, art, 1)
+                end
+            end) 
+        end
     end,
 
     ProcessObjectSetup = 
