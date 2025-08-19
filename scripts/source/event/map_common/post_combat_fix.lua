@@ -30,7 +30,7 @@ function PostCombatFixThread(player)
       for desc, event in post_combat_events do
         event(check_hero, fight_id)
       end
---      -- временный фикс, добавить post_combat ивенты
+--      -- пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ post_combat пїЅпїЅпїЅпїЅпїЅпїЅ
 --      if MCCS_DEFAULT_SETTINGS.use_new_arts == 1 then
 --        if NAF_GetComplexArtUpgrade(check_hero, TENEGORN_SCALES_PRESET) > 0 then
 --          print('checking ts lvl')

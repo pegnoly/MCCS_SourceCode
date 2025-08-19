@@ -102,7 +102,7 @@ function CommonMapLoadingThread()
   startThread(CustomAbility.EnableHeroAbility)
   startThread(CustomAbility.EnableArtifactAbility)
   --
-  sleep(10)
+  sleep()
   --
   startThread(AdvMapThreads.AddHeroesThread)
   startThread(AdvMapThreads.RemoveHeroesThread)
