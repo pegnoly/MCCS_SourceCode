@@ -359,6 +359,9 @@ function OnSpellCast(data)
     end
   end
   --print("caster: ", caster, "; spell: ", spell + 0, "; target: ", target)
+  if (spell + 0) == 390 then
+    Finish(0)
+  end
   for desc, func in CombatFunctions.ON_SPELL_CAST do
     --print("OnSpellCast: executing ", desc)
     startThread(func, caster, spell + 0, target)
