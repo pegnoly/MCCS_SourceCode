@@ -3,7 +3,7 @@ do
   --- Устанавливает коэффициент опыта на для героев(с учетом поправки на сложность)
   ---@param coef number коэффициент
   function SetHeroesExpCoef(coef)
-    for i, exp_diff in diff_exp_coeffs do
+    for i, exp_diff in diffExpCoeffs do
       exp_diff = exp_diff * coef
     end
     %oldSetHeroesExpCoef(coef)
