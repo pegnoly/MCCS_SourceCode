@@ -22,7 +22,7 @@ FightGenerator = {
             local creature = data.army_getters[i]()
             if stack_type == UNIT_COUNT_GENERATION_MODE_POWER_BASED then
                 local stack_power = data.army_base_count_data[i][diff]
-                if data.army_counts_grow then
+                if data.army_counts_grow and length(data.army_counts_grow) > 0 then
                     stack_power = stack_power + data.army_counts_grow[i][diff] * week
                 end
                 stacks_info[s_n] = creature
@@ -53,7 +53,7 @@ FightGenerator = {
             local count
             if stack_type == UNIT_COUNT_GENERATION_MODE_POWER_BASED then
                 local stack_power = data.army_base_count_data[i][diff]
-                if data.army_counts_grow and data.army_counts_grow[i] and data.army_counts_grow[i][diff] then
+                if data.army_counts_grow and length(data.army_counts_grow) > 0 and data.army_counts_grow[i] and data.army_counts_grow[i][diff] then
                     stack_power = stack_power + data.army_counts_grow[i][diff] * week
                 end
                 count = ceil(stack_power / Creature.Params.Power(creature)) 
@@ -131,12 +131,13 @@ FightGenerator = {
 
     ProcessHeroSetup = 
     function(hero, data) 
-        startThread(
-        function ()
-            local stacks_data = %data.stacks_data
-            local hero = %hero
+        -- startThread(
+        -- function ()
+        --     local stacks_data = %data.stacks_data
+        --     local hero = %hero
+        if data.stacks_data then
             local placeholder_removed
-            for _, stack in stacks_data do
+            for _, stack in data.stacks_data do
                 AddHeroCreatures(hero, stack.creature, stack.count)
                 if not placeholder_removed then
                     while GetHeroCreatures(hero, stack.creature) ~= stack.count do
@@ -149,7 +150,8 @@ FightGenerator = {
                     placeholder_removed = 1
                 end
             end
-        end)
+        end
+        -- end)
 
         if data.artifacts_data then
             startThread(

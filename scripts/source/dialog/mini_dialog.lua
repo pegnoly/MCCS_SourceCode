@@ -14,7 +14,7 @@ function(name, alt_set, player)
   alt_set = alt_set or "main"
   --if not MiniDialog.Sets[name] then
     local dialog_file = MiniDialog.Paths[name].."/script.lua"
-    print("Dialog script file: ", dialog_file)
+    -- print("Dialog script file: ", dialog_file)
     doFile(dialog_file)
     while not MiniDialog.Sets[name] do
       sleep()
@@ -47,8 +47,8 @@ function(path, set, curr_step, max_step, alt_set, player)
     curr_set = set[curr_step.."_main"]
     text = path..curr_step.."_main.txt"
   end
-  print('<color=red>MiniDialog: <color=green>curr state is ', curr_step)
-  print('<color=red>MiniDialog: <color=green>curr text is ', text)
+  -- print('<color=red>MiniDialog: <color=green>curr state is ', curr_step)
+  -- print('<color=red>MiniDialog: <color=green>curr text is ', text)
   local icon = ""
   if curr_set.speaker_type == SPEAKER_TYPE_HERO then
     icon = Hero.Params.Icon(curr_set.speaker)
@@ -70,7 +70,6 @@ function(path, set, curr_step, max_step, alt_set, player)
                  nil,
                  nil,
                  nil)
-  -- ���� ����� ������
   while MiniDialog.answer_for_player[player] == 6 do
     sleep()
   end

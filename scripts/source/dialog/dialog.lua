@@ -30,22 +30,20 @@ Dialog =
     ---@param dialog table таблица параметров диалога
     ---@param hero string скриптовое имя героя, использующего диалог
     ---@param player PlayerID id игрока, для которого открывается диалог
-    NewDialog =
-    function(dialog, hero, player)
-        print("Trying to open dialog ", dialog, " for hero ", hero, " of player ", player)
+    NewDialog = function(dialog, hero, player)
+        -- print("Trying to open dialog ", dialog, " for hero ", hero, " of player ", player)
         local new_dialog = {}
         for k, v in dialog do
             new_dialog[k] = v
         end
-        print("Error somewhere in assigment...")
+        -- print("Error somewhere in assigment...")
         Dialog.Open(new_dialog, hero, player)
     end,
 
     --- Получает текущий активный диалог для игрока
     ---@param player PlayerID id игрока
     ---@return table dialog диалог
-    GetActiveDialogForPlayer =
-    function(player)
+    GetActiveDialogForPlayer = function(player)
         local answer = Dialog.active_dialog_for_player[player]
         return answer
     end,
@@ -61,7 +59,7 @@ Dialog =
         Dialog.active_dialog_for_player[player] = dialog
         Dialog.active_hero_for_player[player] = hero
         Dialog.active_dialog_for_player[player].Open(player)
-        print(hero, ' in Open()')
+        -- print(hero, ' in Open()')
     end,
 
     Action =
@@ -85,11 +83,11 @@ Dialog =
                 else
                     options[ans_num] = path..msg
                 end
-                --print('<color=red>Dialog: <color=green>option: ', ans_num, ', msg: ', options[ans_num])
+                -- print('<color=red>Dialog: <color=green>option: ', ans_num, ', msg: ', options[ans_num])
             end
         end
-        --print('<color=red>Dialog: <color=green>icon is ', icon)
-        --print('<color=red>Dialog: <color=green>main text is ', path..curr_options[state][0])
+        -- print('<color=red>Dialog: <color=green>icon is ', icon)
+        -- print('<color=red>Dialog: <color=green>main text is ', path..curr_options[state][0])
         Dialog.answer_for_player[player] = 6
         -- while not GetCurrentPlayer() == player do
         --     sleep()
