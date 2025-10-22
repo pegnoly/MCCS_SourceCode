@@ -269,6 +269,13 @@ end
 function StartDialogScene(name, callback, save_name)
 end
 
+--- Запускает диалоговую сцену, при этом не блокирует основной поток игры(сомнительно:))
+---@param name string путь к файлу сцены
+---@param callback? string имя функции, которая будет запущена после закрытия сцены
+---@param save_name? string имя сохранения, которое будет сделано перед сценой
+function StartDialogSceneInt(name, callback, save_name)
+end
+
 --- Останавливает проигрывание зацикленного звука
 ---@param name string скриптовое имя источника звука
 function StopPlaySound(name)

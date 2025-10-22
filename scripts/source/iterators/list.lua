@@ -45,6 +45,23 @@ list_iterator = {
         return t
     end,
 
+    FilterMap = 
+    --- Преобразует значения заданной таблицы t в новую, на основе указанного предиката predicate
+    ---@param t table Исходная таблица
+    ---@param convert function Преобразующая функция
+    ---@return table v Новая таблица
+    function (t, convert)
+        local answer, n = {}, 0
+        for k, v in t do
+            local b = convert(v)
+            if b then
+                n = n + 1
+                answer[n] = b
+            end
+        end
+        return answer
+    end,
+
     Join = 
     --- Джойнит две таблицы, которые имеют ключи-числа
     ---@param t1 table Первая таблица
@@ -100,5 +117,41 @@ list_iterator = {
             end
         end
         return answer
+    end,
+
+    Concat = 
+    function (t, sep)
+        local answer = ""
+        for _, v in t do
+            local stringified = v..""
+            if answer ~= "" then
+                if stringified ~= "" then
+                    answer = answer..""..sep.." "..stringified
+                end
+            else
+                answer = answer..stringified
+            end
+        end
+        return answer
+    end,
+
+    TakeRandom = 
+    function (t, count)
+        local count = count >= length(t) and length(t) or count
+        local result, n = {}, 0
+        while n ~= count do
+            local value = Random.FromTable(t)
+            n = n + 1
+            result[n] = value
+            t = list_iterator.Filter(t, function (v)
+                local result = %result
+                if not contains(result, v) then
+                    return 1
+                end
+                return nil
+            end)
+            sleep()
+        end
+        return result
     end
 }

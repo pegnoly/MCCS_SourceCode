@@ -34,6 +34,7 @@ doFile('/scripts/source/event/touch/touch.lua')
 doFile('/scripts/source/event/map_common/events.lua')
 sleep()
 doFile('/scripts/source/iterators/list.lua')
+doFile('/scripts/source/iterators/range.lua')
 
 while not MapLoadingEvent do 
 	sleep()
