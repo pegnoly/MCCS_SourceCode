@@ -1,5 +1,8 @@
 doFile('/scripts/source/iterators/list.lua')
 
+---@alias UnitCountGenerationMode
+---| `UNIT_COUNT_GENERATION_MODE_POWER_BASED`
+---| `UNIT_COUNT_GENERATION_MODE_RAW`
 UNIT_COUNT_GENERATION_MODE_POWER_BASED = 0
 UNIT_COUNT_GENERATION_MODE_RAW = 1
 
@@ -7,16 +10,49 @@ while not UNIT_COUNT_GENERATION_MODE_POWER_BASED and not UNIT_COUNT_GENERATION_M
     sleep()
 end
 
+---@alias ArmyGetter fun(): number
+
+---@class FightGenerationModel
+---@field stack_count_generation_logic UnitCountGenerationMode []
+---@field army_base_count_data table<DifficultyLevel, number> []
+---@field army_counts_grow table<DifficultyLevel, number> []?
+---@field army_getters ArmyGetter []
+---@field required_artifacts number []?
+---@field optional_artifacts table<ArtifactSlot, number[]>?
+---@field artifacts_base_costs table<DifficultyLevel, number>?
+---@field artifacts_costs_grow table<DifficultyLevel, number>?
+FightGenerationModel = {}
+
+---@class FightStacksModel
+---@field stacks_count number
+---@field stacks_info number[]
+FightStacksModel = {}
+
+---@class FightSingleStackModel
+---@field creature number
+---@field count number
+FightSingleStackModel = {}
+
+---@class FightHeroSetupModel
+---@field stacks_data number[]
+---@field artifacts_data number[]?
+FightHeroSetupModel = {}
+
 FightGenerator = {
     
     SetupNeutralsCombat =
+    -- Генерирует инфу о битве с нейтралами в форме, данных, которая может быть сразу передана в MCCS_StartCombat
+    ---@param data FightGenerationModel
+    ---@return FightStacksModel
     function (data)
-        --print("Generation started on data: ", data)
         local diff = GetDifficulty()
         local week = GetDate(WEEK)
-
+        ---@type FightStacksModel
+        local result
+        ---@type number
         local stacks_count = 0
         local stacks_info, s_n = {}, 1
+        ---@param stack_type UnitCountGenerationMode
         for i, stack_type in data.stack_count_generation_logic do
             stacks_count = stacks_count + 1
             local creature = data.army_getters[i]()
@@ -39,17 +75,21 @@ FightGenerator = {
             end
         end
 
-        return {stacks_count = stacks_count, stacks_info = stacks_info}
+        result = { stacks_count = stacks_count, stacks_info = stacks_info }
+        return result
     end,
 
     GenerateStacksData = 
+    -- Генерирует информацию о стеках юнитов в форме, удобной для добавления их в армию некоторого объекта
+    ---@param data FightGenerationModel
+    ---@return FightSingleStackModel[]
     function (data)
         local diff = GetDifficulty()
         local week = GetDate(WEEK)
+        ---@type FightSingleStackModel[]
         local stacks_data, n = {}, 1
         for i, stack_type in data.stack_count_generation_logic do
             local creature = data.army_getters[i]()
-            print("Got creature: ", creature)
             local count
             if stack_type == UNIT_COUNT_GENERATION_MODE_POWER_BASED then
                 local stack_power = data.army_base_count_data[i][diff]
@@ -71,12 +111,18 @@ FightGenerator = {
     end,
 
     GenerateHeroSetupData = 
+    -- Генерирует полную модель данных для настройки героя
+    ---@param data FightGenerationModel
+    ---@return FightHeroSetupModel
     function (data)
         local diff = GetDifficulty()
         local week = GetDate(WEEK)
+        ---@type FightHeroSetupModel
+        local result
         local stacks_data = FightGenerator.GenerateStacksData(data)
         if not data.artifacts_base_costs then
-            return { stacks_data = stacks_data }
+            result = { stacks_data = stacks_data }
+            return result
         end
         --
         local artifacts_data, a_n = {}, 1
@@ -126,10 +172,14 @@ FightGenerator = {
             weight = weight - Art.Params.Cost(art)
             sleep()
         end
-        return { stacks_data = stacks_data, artifacts_data = artifacts_data}
+        result = { stacks_data = stacks_data, artifacts_data = artifacts_data }
+        return result
     end,
 
     ProcessHeroSetup = 
+    -- Настраивает героя
+    ---@param hero string
+    ---@param data FightHeroSetupModel
     function(hero, data) 
         -- startThread(
         -- function ()
@@ -166,6 +216,9 @@ FightGenerator = {
     end,
 
     ProcessObjectSetup = 
+    -- Настраивает объект на карте
+    ---@param object string
+    ---@param data FightStacksModel
     function (object, data)
         for _, stack in data do
             AddObjectCreatures(object, stack.creature, stack.count)
