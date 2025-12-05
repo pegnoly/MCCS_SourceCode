@@ -33,6 +33,7 @@ doFile('/scripts/source/dialog/mini_dialog.lua')
 doFile('/scripts/source/event/touch/touch.lua')
 doFile('/scripts/source/event/map_common/events.lua')
 sleep()
+doFile('/scripts/source/iterators/types.lua')
 doFile('/scripts/source/iterators/list.lua')
 doFile('/scripts/source/iterators/range.lua')
 
