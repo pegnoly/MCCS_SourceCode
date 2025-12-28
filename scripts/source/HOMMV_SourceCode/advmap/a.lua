@@ -7,7 +7,7 @@ function AddHeroCreatures(hero, creature, count, slot)
 end
 
 --- Добавляет отряд существ в армию объекта
----@param hero string скриптовое имя объекта
+---@param object string скриптовое имя объекта
 ---@param creature CreatureID id существа
 ---@param count integer число существ
 ---@param slot integer слот в армии (-1 по умолчанию - первый свободный слот)

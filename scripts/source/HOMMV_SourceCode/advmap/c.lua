@@ -149,6 +149,7 @@ end
 ---@param n number число
 ---@return integer res ближайшее целое число
 function ceil(n)
+    return -1
 end
 
 --- Очищает от текста предназначенный для вывода tutorial-сообщений элемент

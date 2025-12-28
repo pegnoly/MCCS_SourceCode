@@ -186,6 +186,7 @@ end
 ---@param type ResourceType тип ресурса
 ---@return integer amount число ресурса
 function GetPlayerResource(player, type)
+    return -1
 end
 
 --- Позволяет выяснять бонус, выбранный  игроком на старте карты в кампании
