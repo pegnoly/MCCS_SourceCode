@@ -28,13 +28,13 @@ Interaction = function (action, condition, priority)
         action = action,
 
         GetPriority = 
+        ---@return InteractionPriority result
         function ()
             local result = %priority
             return result
         end,
 
         SetPriority = 
-        ---comment
         ---@param new_priority InteractionPriority
         function (new_priority)
             local current = %priority
@@ -44,9 +44,8 @@ Interaction = function (action, condition, priority)
         end,
 
         Run =
-        ---comment
-        ---@param hero string
-        ---@param object string
+        ---@param hero string Hero interacted with object this interaction belongs to
+        ---@param object string Interactable object that have this interaction
         function (hero, object)
             local condition = %condition
             local action = %action
@@ -67,6 +66,7 @@ end
 ---@field AsHero fun(cursor: ObjectInteractionCursorType?): Interactable
 ---@field GetInteraction fun(id: string): Interaction
 ---@field AddInteraction fun(id: string, value: Interaction|nil): Interactable
+---@field UpdateInteraction fun(id: string, value: Interaction): Interactable
 ---@field RemoveInteraction fun(id: string): Interactable
 ---@field RunInteractions fun(hero: string)
 Interactable = {}
@@ -189,6 +189,19 @@ Interactable = function (name, interactions)
             return it
         end,
 
+        UpdateInteraction =
+        ---comment
+        ---@param id string
+        ---@param value Interaction
+        function (id, value)
+            local object = %name
+            local interactions = %interactions
+            interactions[id] = value
+
+            local it = Interactable(object, interactions)
+            return it
+        end,
+
         RemoveInteraction =
         ---@param id string
         function (id)
@@ -200,13 +213,67 @@ Interactable = function (name, interactions)
         end,
 
         RunInteractions =
-        ---comment
         ---@param hero string
         function (hero)
             local object = %name
             local interactions = %interactions
+            ---@type Iterator
+            local pit = Iterator(interactions)
+            ---@type Iterator
+            local dit = Iterator(interactions)
+            ---@type Iterator
+            local lit = Iterator(interactions)
+
+            ---@type Interaction[]
+            local priority_interactions = pit
+                .Filter(
+                ---@param item Interaction
+                function (item)
+                    if item.GetPriority() == INTERACTION_PRIORITY_HIGH then
+                        return 1
+                    end
+                    return nil
+                end)
+                .Collect()
+
+            ---@type Interaction[]
+            local default_interactions = dit
+                .Filter(
+                ---@param item Interaction
+                function (item)
+                    if item.GetPriority() == INTERACTION_PRIORITY_DEFAULT then
+                        return 1
+                    end
+                    return nil
+                end)
+                .Collect()
+
+            ---@type Interaction[]
+            local low_interactions = lit
+                .Filter(
+                ---@param item Interaction
+                function (item)
+                    if item.GetPriority() == INTERACTION_PRIORITY_LOW then
+                        return 1
+                    end
+                    return nil
+                end)
+                .Collect()
+
             ---@param interaction Interaction
-            for _, interaction in interactions do
+            for _, interaction in priority_interactions do
+                -- print("Running priority interaction ", interaction)
+                interaction.Run(hero, object)
+            end
+
+            ---@param interaction Interaction
+            for _, interaction in default_interactions do
+                -- print("Running default interaction ", interaction)
+                interaction.Run(hero, object)
+            end
+
+            ---@param interaction Interaction
+            for _, interaction in low_interactions do
                 interaction.Run(hero, object)
             end
         end
@@ -219,12 +286,16 @@ Interactable = function (name, interactions)
     return interactable
 end
 
----@type Interactable
-Interactable("test1")
-    .AsCreature(DISABLED_INTERACT, 0)
-    .AddInteraction("test", Interaction(function (hero, object)
-        print("Hero ", hero, " interacted with ", object)
-    end))
-    .AddInteraction("test2", Interaction(function (hero, object)
-        print("Hero ", hero, " interacted with ", object, " again")
-    end))
+-- ---@type Interactable
+-- Interactable("test1")
+--     .AsCreature(DISABLED_INTERACT, 0)
+--     .AddInteraction("test", Interaction(function (hero, object)
+--         print("Hero ", hero, " interacted with ", object)
+--     end))
+--     .AddInteraction("test2", Interaction(function (hero, object)
+--         print("Hero ", hero, " interacted with ", object, " again")
+--     end))
+
+-- local it = Interactables["test1"]
+-- local it1 = it.GetInteraction("test")
+-- it.UpdateInteraction("test", it1.SetPriority(INTERACTION_PRIORITY_HIGH))
