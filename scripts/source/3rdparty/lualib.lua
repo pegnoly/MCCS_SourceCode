@@ -383,6 +383,11 @@ function table.insert(t, value, pos)
 	t[pos] = value
 end
 
+function table.push(t, value)
+	local len = length(t)
+	t[len + 1] = value
+end
+
 function table.remove(t, pos)
 --	if arg.n == 0 then
 --		 return t

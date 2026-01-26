@@ -285,17 +285,3 @@ Interactable = function (name, interactions)
 
     return interactable
 end
-
--- ---@type Interactable
--- Interactable("test1")
---     .AsCreature(DISABLED_INTERACT, 0)
---     .AddInteraction("test", Interaction(function (hero, object)
---         print("Hero ", hero, " interacted with ", object)
---     end))
---     .AddInteraction("test2", Interaction(function (hero, object)
---         print("Hero ", hero, " interacted with ", object, " again")
---     end))
-
--- local it = Interactables["test1"]
--- local it1 = it.GetInteraction("test")
--- it.UpdateInteraction("test", it1.SetPriority(INTERACTION_PRIORITY_HIGH))

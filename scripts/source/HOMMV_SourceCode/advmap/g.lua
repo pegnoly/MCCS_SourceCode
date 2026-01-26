@@ -23,14 +23,25 @@ end
 function GetArtifactSetItemsCount(hero, set, only_combined)
 end
 
+--- Определяет число имеющихся у героя артефактов заданного типа
+---@param hero string скриптовое имя героя
+---@param artifact ArtifactID id артефакта
+---@param is_equipped 1|nil при значении 1 возвращает только число экипированных артефактов(актуально для колец)
+---@return number count
+function GetHeroArtifactsCount(hero, artifact, is_equipped)
+    return -1
+end
+
 --- Позволяет выяснить текущий тип недели в игре
 ---@return WeekType week тип недели
 function GetCurrentMoonWeek()
+    return WEEK_OF_AIR
 end
 
 --- Определяет текущего игрока
 ---@return PlayerID|integer player id игрока(-1 при одновременных ходах)
 function GetCurrentPlayer()
+    return -1
 end
 
 --- Определяет фильтр игрока в сетевой игре

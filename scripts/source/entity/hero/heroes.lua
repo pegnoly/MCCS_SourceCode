@@ -261,10 +261,10 @@ Hero =
             local answer, n = {}, 0
             for art = 1, ARTIFACTS_COUNT do
                 if HasArtefact(hero, art) then
-                for i = 1, GetHeroArtifactCount(hero, art) do
-                    n = n + 1
-                    answer[n] = art
-                end
+                    for i = 1, GetHeroArtifactsCount(hero, art) do
+                        n = n + 1
+                        answer[n] = art
+                    end
                 end
             end
             return answer
