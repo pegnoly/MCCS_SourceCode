@@ -21,7 +21,7 @@ sleep()
 doFile('/scripts/source/common/adv_map/override.lua')
 doFile('/scripts/source/common/adv_map/load.lua')
 doFile('/scripts/source/event/map_common/events.lua')
-doFile('/scripts/source/event/custom_ability/custom_ability_main.lua')
+doFile('/scripts/source/event/custom_ability/script.lua')
 sleep()
 doFile('/scripts/source/entity/object.lua')
 doFile('/scripts/source/entity/resource.lua')
@@ -102,8 +102,6 @@ function CommonMapLoadingThread()
   end)
   --
   MapLoadingEvent.Invoke()
-  startThread(CustomAbility.EnableHeroAbility)
-  startThread(CustomAbility.EnableArtifactAbility)
   --
   sleep()
   --
