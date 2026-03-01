@@ -132,7 +132,9 @@ Iterator = function (items)
                 end).Collect()
                 sleep()
             end
-            return result
+            ---@type Iterator
+            local it = Iterator(result)
+            return it
         end,
 
         ---@param separator string
