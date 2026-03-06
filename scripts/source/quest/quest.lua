@@ -13,6 +13,11 @@ function(obj, hero, player)
   player = player or PLAYER_1
   SetObjectiveState(obj, OBJECTIVE_ACTIVE, player)
   if hero then
+    if not Quest.Names[obj] then
+      while not Quest.Names[obj] do
+        sleep()
+      end
+    end
     MessageQueue.AddMessage(player, {"/Text/Default/Quest/quest_started.txt"; q_name = Quest.Names[obj]}, hero, 6.0)
   end
 end

@@ -152,6 +152,7 @@ Dialog =
 
     SetAnswer =
     function(dialog, state, option, answer, next_state, is_enabled, is_custom_path)
+        print("Dialog.SetAnswer called with params: state=", state, ", option=", option, ", answer=", answer)
         is_enabled = is_enabled or 1
         is_custom_path = is_custom_path or nil
         dialog.options[state][option] = {answer, next_state, is_enabled, is_custom_path}

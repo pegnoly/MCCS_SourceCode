@@ -38,6 +38,10 @@ doFile('/scripts/source/iterators/types.lua')
 doFile('/scripts/source/iterators/list.lua')
 doFile('/scripts/source/iterators/range.lua')
 
+while not Hero do
+  sleep()
+end
+
 while not MapLoadingEvent do 
 	sleep()
 end

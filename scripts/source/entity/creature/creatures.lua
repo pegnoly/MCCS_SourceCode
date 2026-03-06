@@ -86,6 +86,20 @@ Creature =
             return answer
         end,
 
+        TownExtended = 
+        --- Возвращает расширенное представление города существа
+        ---@param creature CreatureID id существа
+        ---@return TownType town тип города
+        function (creature)
+            errorHook(
+            function()
+                Creature.Params.Exception(%creature, "town_extended")
+            end)
+            local answer = MCCS_CREATURE_GENERATED_TABLE[creature] and
+                            MCCS_CREATURE_GENERATED_TABLE[creature].town_extended or MCCS_CREATURE_GENERATED_TABLE[GetCreatureType(creature)].town_extended
+            return answer
+        end,
+
         Size =
         --- Возвращает размер существа
         ---@param creature CreatureID id существа
@@ -533,7 +547,7 @@ Creature =
             end)
             local answer = {[1] = {}, [2] = {}, [3] = {}, [4] = {}, [5] = {}, [6] = {}, [7] = {}}
             for creature, info in MCCS_CREATURE_GENERATED_TABLE do
-                if Creature.Params.Town(creature) == town then
+                if Creature.Params.TownExtended(creature) == town then
                 local tier = Creature.Params.Tier(creature)
                 answer[tier][length(answer[tier]) + 1] = creature
                 end
@@ -549,7 +563,7 @@ Creature =
             function()
                 Creature.Sorting.Exception("Init")
             end)
-            for town = TOWN_HEAVEN, TOWN_STRONGHOLD do
+            for town = TOWN_HEAVEN, TOWN_RENEGADES do
                 print("<color=red>Creature.Sorting.Init: <color=green>town - ", town)
                 TIER_TABLES[town] = Creature.Sorting.TownByTier(town)
             end

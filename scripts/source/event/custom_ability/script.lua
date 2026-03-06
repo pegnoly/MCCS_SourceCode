@@ -63,13 +63,11 @@ custom_ability_common = {
     end
 }
 
-while not custom_ability_common do
-    sleep()
-end
-
 Trigger(CUSTOM_ABILITY_TRIGGER, 'custom_ability_common.ActivateAbility')
 
 AddHeroEvent.AddListener("init_custom_abilities_loop_listener",
 function (hero)
-    startThread(custom_ability_common.AbilityUpdateThread, hero)
+    if GetObjectOwner(hero) == PLAYER_1 then
+        startThread(custom_ability_common.AbilityUpdateThread, hero) 
+    end
 end)

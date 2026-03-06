@@ -4,6 +4,10 @@
 RANDOM_ADV_MAP_MODE = "Random_ADV_MAP"
 RANDOM_COMBAT_MODE = "Random_COMBAT"
 
+while not RANDOM_COMBAT_MODE do
+  sleep()
+end
+
 Random =
 {
   Exception =

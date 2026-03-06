@@ -58,10 +58,12 @@ AdvMapThreads =
                           end
                       end
                       if not AdvMapHeroesInfo.alive_heroes[hero] then
+                          -- print("Adding ", hero, " as alive")
                           AdvMapHeroesInfo.alive_heroes[hero] = HERO_CONDITION_ALIVE
                           SetHeroCombatScript(hero, '/CheckScript.xdb#xpointer(/Script)')
                           startThread(Hero.Threads.LevelUp, hero)
                           startThread(Hero.Threads.XpTracker, hero)
+                          -- print("Add hero event in this state", AddHeroEvent)
                           startThread(AddHeroEvent.Invoke, hero)
                       else
                           if AdvMapHeroesInfo.alive_heroes[hero] == HERO_CONDITION_DEAD then
