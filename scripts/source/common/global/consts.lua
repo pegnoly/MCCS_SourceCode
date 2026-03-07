@@ -42,7 +42,7 @@ function len(t)
 end
 
 function keys(t)
-  local answer, n = {}, 0
+  local answer, n = {}, 1
   for k, v in t do
 	if v then
 	  answer[n] = k

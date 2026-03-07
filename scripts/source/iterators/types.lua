@@ -187,6 +187,37 @@ Iterator = function (items)
             end
             return current_answer
         end,
+
+        ---@param chunk_amount number
+        ---@return Iterator
+        Chunks = function (chunk_amount)
+            local items = %items
+            local l = len(items)
+            if l <= chunk_amount then
+                local it = Iterator(items)
+                return it
+            end
+            local start_index = 1
+            local last_index = chunk_amount
+            local result, n = {}, 1
+            while 1 do
+                local t, t_n = {}, 1
+                for i = start_index, last_index do
+                    t[t_n] = items[i]
+                    t_n = t_n + 1
+                end
+                result[n] = t
+                n = n + 1
+                if last_index == l then
+                    break
+                end
+                start_index = start_index + chunk_amount
+                last_index = (last_index + chunk_amount) >= l and l or (last_index + chunk_amount)
+                sleep()
+            end
+            local it = Iterator(result)
+            return it
+        end,
         
         Collect = function()
             local items = %items
