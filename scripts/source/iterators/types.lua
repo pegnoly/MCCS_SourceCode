@@ -23,6 +23,7 @@
 ---@field Concat IteratorConcatenator Преобразует элементы итератора в строку
 ---@field MaxBy IteratorSingleItemSelector Возвращает единственный элемент итератора, имеющий максимальное значение по заданному условию
 ---@field MinBy IteratorSingleItemSelector Возвращает единственный элемент итератора, имеющий минимальное значение по заданному условию
+---@field Chunks IteratorSelector Возвращает итератор из массивов, полученных путем разбиения исходного на равные части
 Iterator = {}
 
 ---@overload fun(items: any[]): Iterator

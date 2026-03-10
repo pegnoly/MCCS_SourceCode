@@ -627,7 +627,7 @@ Creature =
         function (towns, tiers)
             local answer, n = {}, 0
             for creature, info in MCCS_CREATURE_GENERATED_TABLE do
-                if contains(tiers, info.tier) and contains(towns, info.town) then
+                if contains(tiers, info.tier) and contains(towns, info.town_extended) then
                     answer[n] = creature
                     n = n + 1
                 end
