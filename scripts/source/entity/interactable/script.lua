@@ -64,6 +64,7 @@ end
 ---@field AsCreature fun(cursor: ObjectInteractionCursorType?, selection: integer?, name_override: string?): Interactable
 ---@field AsBuilding fun(cursor: ObjectInteractionCursorType?, name_override: string?, desc_override: string?): Interactable
 ---@field AsHero fun(cursor: ObjectInteractionCursorType?): Interactable
+---@field HasInteraction fun(id: string): 1|nil
 ---@field GetInteraction fun(id: string): Interaction
 ---@field AddInteraction fun(id: string, value: Interaction|nil): Interactable
 ---@field UpdateInteraction fun(id: string, value: Interaction): Interactable
@@ -162,6 +163,16 @@ Interactable = function (name, interactions)
 
             local it = Interactable(object, interactions)
             return it
+        end,
+
+        HasInteraction = 
+        ---@param id string
+        function (id)
+            local interactions = %interactions
+            if interactions[id] then
+                return 1
+            end
+            return nil
         end,
 
         GetInteraction =
