@@ -66,7 +66,7 @@ FightGenerator = {
                 s_n = s_n + 2
             else
                 local count = data.army_base_count_data[i][diff]
-                if data.army_counts_grow then
+                if data.army_counts_grow and length(data.army_counts_grow) > 0 then
                     count = count + data.army_counts_grow[i][diff] * week
                 end
                 stacks_info[s_n] = creature
