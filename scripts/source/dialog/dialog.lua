@@ -25,6 +25,8 @@ Dialog =
     ---@type table<PlayerID, DialogDefinition>
     active_dialog_for_player = {},
 
+    string_to_parse = "",
+
     -- текущий герой, использующий диалог для конкретного игрока
     ---@type table<PlayerID, string>
     active_hero_for_player =
@@ -103,14 +105,29 @@ Dialog =
                 if option.is_enabled then
                     ans_num = ans_num + 1
                     if option.is_custom_path then
-                        options[ans_num] = option.answer..".txt"
+                        if type(option.answer) == "string" then
+                            options[ans_num] = option.answer..".txt" 
+                        else
+                            local t = option.answer[1]
+                            local p = {}
+                            for k, v in option.answer do
+                                if k ~= 1 then
+                                    table.push(p, ""..k.." = "..v) 
+                                end
+                            end
+                            ---@type Iterator
+                            local it = Iterator(p)
+                            local s = 'Dialog.string_to_parse = {"'..t..'"; '..it.Concat(", ")..'}'
+                            parse(s)()
+                            options[ans_num] = Dialog.string_to_parse
+                        end
                     else
                         options[ans_num] = active_dialog.path..option.answer..".txt"
                     end
                 end
             end
         end
-        -- print("Dialog.Action called with options: ", options)
+        print("Dialog.Action called with options: ", options)
         Dialog.answer_for_player[player] = 6
         TalkBoxForPlayers(GetPlayerFilter(player), active_dialog.icon, nil,
                         active_dialog.path..active_dialog.options[active_dialog.state][0]..".txt", nil,
