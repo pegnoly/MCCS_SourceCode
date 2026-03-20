@@ -1,8 +1,32 @@
+---@alias DialogPerformFunc fun(player: PlayerID, state: any, answer: number, next_state: any): number
+
+---@class DialogOption
+---@field answer string
+---@field next_state any
+---@field is_enabled 1|nil
+---@field is_custom_path 1|nil
+DialogOption = {}
+
+---@class DialogDefinition
+---@field state any
+---@field path string
+---@field icon string
+---@field perform_func DialogPerformFunc
+---@field title string
+---@field select_text string
+---@field options table<number, DialogOption[]>
+---@field Open fun(player: PlayerID)
+---@field Reset fun(player: PlayerID)
+DialogDefinition = {}
+
 Dialog =
 {
     -- текущий активный диалог для игрока
+    ---@type table<PlayerID, DialogDefinition>
     active_dialog_for_player = {},
+
     -- текущий герой, использующий диалог для конкретного игрока
+    ---@type table<PlayerID, string>
     active_hero_for_player =
     {
         [PLAYER_1] = '',
@@ -14,7 +38,9 @@ Dialog =
         [PLAYER_7] = '',
         [PLAYER_8] = ''
     },
+
     -- текущий ответ, выбранный конкретным игроком
+    ---@type table<PlayerID, number>
     answer_for_player =
     {
         [PLAYER_1] = 6,
@@ -26,77 +52,71 @@ Dialog =
         [PLAYER_7] = 6,
         [PLAYER_8] = 6
     },
+
     --- Открывает новый диалог
-    ---@param dialog table таблица параметров диалога
-    ---@param hero string скриптовое имя героя, использующего диалог
-    ---@param player PlayerID id игрока, для которого открывается диалог
+    ---@param dialog DialogDefinition
+    ---@param hero string
+    ---@param player PlayerID
     NewDialog = function(dialog, hero, player)
-        -- print("Trying to open dialog ", dialog, " for hero ", hero, " of player ", player)
         local new_dialog = {}
         for k, v in dialog do
             new_dialog[k] = v
         end
-        -- print("Error somewhere in assigment...")
         Dialog.Open(new_dialog, hero, player)
     end,
 
     --- Получает текущий активный диалог для игрока
     ---@param player PlayerID id игрока
-    ---@return table dialog диалог
+    ---@return DialogDefinition dialog диалог
     GetActiveDialogForPlayer = function(player)
         local answer = Dialog.active_dialog_for_player[player]
         return answer
     end,
 
-    GetActiveHeroForPlayer = 
-    function (player)
+    ---@param player PlayerID
+    ---@return string
+    GetActiveHeroForPlayer = function (player)
         local answer = Dialog.active_hero_for_player[player]
         return answer
     end,
 
-    Open =
-    function(dialog, hero, player)
+    ---@param dialog DialogDefinition
+    ---@param hero string
+    ---@param player PlayerID
+    Open = function(dialog, hero, player)
         Dialog.active_dialog_for_player[player] = dialog
         Dialog.active_hero_for_player[player] = hero
         Dialog.active_dialog_for_player[player].Open(player)
-        -- print(hero, ' in Open()')
     end,
 
-    Action =
-    function(player)
-        local state = Dialog.GetActiveDialogForPlayer(player).state
-        local path = Dialog.GetActiveDialogForPlayer(player).path
-        local icon = Dialog.GetActiveDialogForPlayer(player).icon
-        local perform_func = Dialog.GetActiveDialogForPlayer(player).perform_func
-        local title = Dialog.GetActiveDialogForPlayer(player).title
-        local select = Dialog.GetActiveDialogForPlayer(player).select_text
-        local curr_options = Dialog.GetActiveDialogForPlayer(player).options
-
+    ---@param player PlayerID
+    Action = function(player)
+        local active_dialog = Dialog.GetActiveDialogForPlayer(player)
+        -- print("Dialog.Action called for dialog: ", active_dialog)
+        ---@type DialogOption|nil[]
         local options = {nil, nil, nil, nil, nil}
         local ans_num = 0
-        for i = 1, length(curr_options[state]) - 1 do
-            if curr_options[state][i] and curr_options[state][i][3] == 1 then
-                local msg = curr_options[state][i][1]
-                ans_num = ans_num + 1
-                if curr_options[state][i][4] then
-                    options[ans_num] = msg
-                else
-                    options[ans_num] = path..msg
+        for i = 1, length(active_dialog.options[active_dialog.state]) - 1 do
+            if active_dialog.options[active_dialog.state][i] then
+                ---@type DialogOption | string
+                local option = active_dialog.options[active_dialog.state][i]
+                if option.is_enabled then
+                    ans_num = ans_num + 1
+                    if option.is_custom_path then
+                        options[ans_num] = option.answer..".txt"
+                    else
+                        options[ans_num] = active_dialog.path..option.answer..".txt"
+                    end
                 end
-                -- print('<color=red>Dialog: <color=green>option: ', ans_num, ', msg: ', options[ans_num])
             end
         end
-        -- print('<color=red>Dialog: <color=green>icon is ', icon)
-        -- print('<color=red>Dialog: <color=green>main text is ', path..curr_options[state][0])
+        -- print("Dialog.Action called with options: ", options)
         Dialog.answer_for_player[player] = 6
-        -- while not GetCurrentPlayer() == player do
-        --     sleep()
-        -- end
-        TalkBoxForPlayers(GetPlayerFilter(player), icon, nil,
-                        path..curr_options[state][0], nil,
+        TalkBoxForPlayers(GetPlayerFilter(player), active_dialog.icon, nil,
+                        active_dialog.path..active_dialog.options[active_dialog.state][0]..".txt", nil,
                         'Dialog.Callback', 1,
-                        path..title..'.txt',
-                        path..select..'.txt', 
+                        active_dialog.path..active_dialog.title..'.txt',
+                        active_dialog.path..active_dialog.select_text..'.txt', 
                         0,
                         options[1],
                         options[2],
@@ -113,79 +133,94 @@ Dialog =
         else
             local check = 0
             for i = 1, 5 do
-                if curr_options[state][i] and curr_options[state][i][3] == 1 then
-                    check = check + 1
-                    if check == ans then
-                        next_state = curr_options[state][i][2]
-                        ans = i
+                if active_dialog.options[active_dialog.state][i] then
+                    ---@type DialogOption | string
+                    local option = active_dialog.options[active_dialog.state][i]
+                    if option.is_enabled then
+                        check = check + 1
+                        if check == ans then
+                            next_state = option.next_state
+                            ans = i
+                        end
                     end
                 end
             end
         end
-        next_state = perform_func(player, state, ans, next_state)
-        --print("next state is ", next_state)
+        next_state = active_dialog.perform_func(player, active_dialog.state, ans, next_state)
         if next_state == 0 then
             return
         else
             if next_state > 0 then
-                Dialog.GetActiveDialogForPlayer(player).state = next_state
+                active_dialog.state = next_state
             end
             Dialog.Action(player)
         end
     end,
 
-    SetState =
-    function(dialog, new_state)
+    ---@param dialog DialogDefinition
+    ---@param new_state any
+    SetState = function(dialog, new_state)
         dialog.state = new_state
     end,
 
-    SetText =
-    function(dialog, state, text)
+    ---@param dialog DialogDefinition
+    ---@param state any
+    ---@param text any
+    SetText = function(dialog, state, text)
         dialog.options[state][0] = text
     end,
 
-    -- SetSelectText =
-    -- function(text, dialog)
-    --     dialog = dialog or Dialog.current_dialog
-    --     dialog.select_text = text
-    -- end,
-
-    SetAnswer =
-    function(dialog, state, option, answer, next_state, is_enabled, is_custom_path)
-        print("Dialog.SetAnswer called with params: state=", state, ", option=", option, ", answer=", answer)
-        is_enabled = is_enabled or 1
-        is_custom_path = is_custom_path or nil
-        dialog.options[state][option] = {answer, next_state, is_enabled, is_custom_path}
+    ---@param dialog DialogDefinition
+    ---@param state any
+    ---@param option number
+    ---@param answer DialogOption
+    SetAnswer = function(dialog, state, option, answer)
+        answer.is_enabled = answer.is_enabled or 1
+        answer.is_custom_path = answer.is_custom_path or nil
+        dialog.options[state][option] = answer ---@diagnostic disable-line
     end,
 
-    SetPredefAnswer =
-    function(dialog, state, option, predef_answer)
-        dialog.options[state][option] = {predef_answer[1], predef_answer[2], predef_answer[3], predef_answer[4]}
+    ---@param dialog DialogDefinition
+    ---@param state any
+    ---@param option number
+    ---@param predef_answer DialogOption
+    SetPredefAnswer = function(dialog, state, option, predef_answer)
+        dialog.options[state][option] = predef_answer ---@diagnostic disable-line
     end,
 
-    DisableAnswer =
-    function(dialog, state, option)
-        dialog.options[state][option][3] = 0
+    ---@param dialog DialogDefinition
+    ---@param state any
+    ---@param option number
+    DisableAnswer = function(dialog, state, option)
+        ---@type DialogOption | string
+        local option = dialog.options[state][option]
+        option.is_enabled = nil
     end,
 
-    EnableAnswer =
-    function(dialog, state, option)
-        dialog.options[state][option][3] = 1
+    ---@param dialog DialogDefinition
+    ---@param state any
+    ---@param option number
+    EnableAnswer = function(dialog, state, option)
+        ---@type DialogOption | string
+        local option = dialog.options[state][option]
+        option.is_enabled = 1
     end,
 
-    IsAnswerEnabled =
-    function(dialog, state, option)
-        local answer = dialog.options[state][option] == 1
+    ---@param dialog DialogDefinition
+    ---@param state any
+    ---@param option number
+    IsAnswerEnabled = function(dialog, state, option)
+        ---@type DialogOption | string
+        local option = dialog.options[state][option]
+        local answer = option.is_enabled
         return answer
     end,
 
-    Callback =
-    function(player, answer)
+    Callback = function(player, answer)
         Dialog.answer_for_player[player] = answer
     end,
 
-    Reset =
-    function(player)
+    Reset = function(player)
         Dialog.GetActiveDialogForPlayer(player).Reset(player)
     end
 }

@@ -7,13 +7,13 @@ end
 --- Открывает для выбранных игроков диалог с несколькими вариантами ответа (от 1 до 5). Функция не выдаёт сообщений об ошибке т.к. если параметры не верны, то используются значения по-умолчанию
 ---@param player PlayerFilter фильтр игрока, для которого выводится диалог
 ---@param icon string путь к файлу иконки диалога
----@param icon_tooltip string путь к файлу текста при клике на иконку
+---@param icon_tooltip string|nil путь к файлу текста при клике на иконку
 ---@param text string путь к основному тексту диалога
----@param add_text string путь к дополнительному тексту диалога
+---@param add_text string|nil путь к дополнительному тексту диалога
 ---@param callback string имя функции, через первый параметр которой сообщается ответ игрока (число: 0 - отмена, -1 - закрыт игрой, 1.. - номер выбранного игроком ответа)
 ---@param mode integer тип режима: 0 - с кнопкой ОК, 1 - ОК/Закрыть
----@param title string путь к тексту заголовка окна
----@param select string путь к тексту заголовка перед опциями выбора
+---@param title string|nil путь к тексту заголовка окна
+---@param select string|nil путь к тексту заголовка перед опциями выбора
 ---@param default_option integer номер ответа, подсвеченного по-умолчанию (число: 0 - нет, 1.. - номер ответа)
 ---@param ... string пути к текстам ответов
 function TalkBoxForPlayers(player, icon, icon_tooltip, text, add_text, callback, mode, title, select, default_option, ...)
