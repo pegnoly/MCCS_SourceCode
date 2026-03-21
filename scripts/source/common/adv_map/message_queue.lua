@@ -12,7 +12,7 @@ MessageQueue =
   AddMessage =
   ---Добавляет сообщение в очередь для игрока
   ---@param player PlayerID id игрока
-  ---@param message string путь к сообщению
+  ---@param message string|table путь к сообщению
   ---@param object string объект, над которым будет выведено сообщение
   ---@param delay number длительность вывода
   function(player, message, object, delay)

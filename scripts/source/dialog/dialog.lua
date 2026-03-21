@@ -1,4 +1,4 @@
----@alias DialogPerformFunc fun(player: PlayerID, state: any, answer: number, next_state: any): number
+---@alias DialogEffect fun(player: PlayerID, state: any, answer: number, next_state: any): number
 
 ---@class DialogOption
 ---@field answer string
@@ -11,7 +11,7 @@ DialogOption = {}
 ---@field state any
 ---@field path string
 ---@field icon string
----@field perform_func DialogPerformFunc
+---@field effect DialogEffect
 ---@field title string
 ---@field select_text string
 ---@field options table<number, DialogOption[]>
@@ -140,6 +140,7 @@ Dialog =
             sleep()
         end
         local ans = Dialog.answer_for_player[player]
+        -- print("Answer: ", ans)
         local next_state
         if ans < 1 then
             next_state = 0
@@ -149,17 +150,21 @@ Dialog =
                 if active_dialog.options[active_dialog.state][i] then
                     ---@type DialogOption | string
                     local option = active_dialog.options[active_dialog.state][i]
+                    -- print("Validating option: ", option)
                     if option.is_enabled then
                         check = check + 1
                         if check == ans then
+                            -- print("Option was checked")
                             next_state = option.next_state
                             ans = i
+                            break
                         end
                     end
                 end
             end
         end
-        next_state = active_dialog.perform_func(player, active_dialog.state, ans, next_state)
+        -- print("Next state: ", next_state)
+        next_state = active_dialog.effect(player, active_dialog.state, ans, next_state)
         if next_state == 0 then
             return
         else

@@ -111,6 +111,6 @@ Resource =
       sign = rtext('+')
     end
     SetPlayerResource(player, res_type, GetPlayerResource(player, res_type) + num, hero)
-    --MessageQueue.AddMessage(player, {'/Text/Default/add_res.txt'; res = ResNames[res_type], color = color, sign = sign, count = num}, hero, 6.0)
+    MessageQueue.AddMessage(player, {'/Text/Default/add_res.txt'; res = ResNames[res_type], color = color, sign = sign, count = num}, hero, 6.0)
   end
 }

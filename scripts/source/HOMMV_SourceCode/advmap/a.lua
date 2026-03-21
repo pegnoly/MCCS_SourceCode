@@ -10,7 +10,7 @@ end
 ---@param object string скриптовое имя объекта
 ---@param creature CreatureID id существа
 ---@param count integer число существ
----@param slot integer слот в армии (-1 по умолчанию - первый свободный слот)
+---@param slot integer? слот в армии (-1 по умолчанию - первый свободный слот)
 function AddObjectCreatures(object, creature, count, slot)
 end
 
