@@ -104,30 +104,26 @@ Dialog =
                 local option = active_dialog.options[active_dialog.state][i]
                 if option.is_enabled then
                     ans_num = ans_num + 1
-                    if option.is_custom_path then
-                        if type(option.answer) == "string" then
-                            options[ans_num] = option.answer..".txt" 
-                        else
-                            local t = option.answer[1]
-                            local p = {}
-                            for k, v in option.answer do
-                                if k ~= 1 then
-                                    table.push(p, ""..k.." = "..v) 
-                                end
-                            end
-                            ---@type Iterator
-                            local it = Iterator(p)
-                            local s = 'Dialog.string_to_parse = {"'..t..'"; '..it.Concat(", ")..'}'
-                            parse(s)()
-                            options[ans_num] = Dialog.string_to_parse
-                        end
+                    if type(option.answer) == "string" then
+                        options[ans_num] = option.is_custom_path and option.answer..".txt" or active_dialog.path..option.answer..".txt"
                     else
-                        options[ans_num] = active_dialog.path..option.answer..".txt"
+                        local t = option.is_custom_path and option.answer[1]..".txt" or active_dialog.path..option.answer[1]..".txt"
+                        local p = {}
+                        for k, v in option.answer do
+                            if k ~= 1 then
+                                table.push(p, ""..k.." = "..v) 
+                            end
+                        end
+                        ---@type Iterator
+                        local it = Iterator(p)
+                        local s = 'Dialog.string_to_parse = {"'..t..'"; '..it.Concat(", ")..'}'
+                        parse(s)()
+                        options[ans_num] = Dialog.string_to_parse
                     end
                 end
             end
         end
-        print("Dialog.Action called with options: ", options)
+        -- print("Dialog.Action called with options: ", options)
         Dialog.answer_for_player[player] = 6
         TalkBoxForPlayers(GetPlayerFilter(player), active_dialog.icon, nil,
                         active_dialog.path..active_dialog.options[active_dialog.state][0]..".txt", nil,
