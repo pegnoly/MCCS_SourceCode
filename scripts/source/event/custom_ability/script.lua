@@ -7,11 +7,14 @@ end
 
 custom_ability_common = {
     ---@type table<number, AbilityStateDetector>
-    ability_state_detectors = {},
+    common_ability_state_detectors = {},
+    ---@type table<number, AbilityStateDetector>
+    unique_ability_state_detectors = {},
     ---@type table<number, AbilityActivator>
     ability_activators = {},
 
     ability_states_for_heroes = {},
+
 
     RegisterAbility = 
     ---@param id number id спелла
@@ -31,13 +34,23 @@ custom_ability_common = {
         custom_ability_common.ability_states_for_heroes[id] = nil
     end,
 
+    ---@param id number
+    ---@param detector AbilityStateDetector
+    ---@param activator AbilityActivator
+    ---@param hero string
+    RegisterUniqueAbilityForHero = function (id, detector, activator, hero)
+        custom_ability_common.unique_ability_state_detectors[id] = detector
+        custom_ability_common.ability_activators[id] = activator
+        custom_ability_common.ability_states_for_heroes[id] = { [hero] = CUSTOM_ABILITY_NOT_PRESENT }
+    end,
+
     AbilityUpdateThread = 
     function (hero)
         while 1 do
             if IsHeroAlive(hero) then
                 ---@param ability number
                 ---@param state_detector AbilityStateDetector
-                for ability, state_detector in custom_ability_common.ability_state_detectors do
+                for ability, state_detector in custom_ability_common.common_ability_state_detectors do
                     local new_state = state_detector(hero)
                     if not custom_ability_common.ability_states_for_heroes[ability][hero] then
                         custom_ability_common.ability_states_for_heroes[ability][hero] = new_state
@@ -50,7 +63,24 @@ custom_ability_common = {
                     end
                 end
             end
-            sleep(20)
+            sleep(50)
+        end
+    end,
+
+    UniqueAbilityUpdateThread =
+    ---@param id number
+    ---@param hero string
+    function (id, hero)
+        while 1 do
+            if IsHeroAlive(hero) then
+                local state_detector = custom_ability_common.unique_ability_state_detectors[id]
+                local new_state = state_detector(hero)
+                if custom_ability_common.ability_states_for_heroes[id][hero] ~= new_state then
+                    custom_ability_common.ability_states_for_heroes[id][hero] = new_state
+                    ControlHeroCustomAbility(hero, id, new_state)
+                end
+            end
+            sleep(50)
         end
     end,
 

@@ -42,7 +42,7 @@ MessageQueue =
         MessageQueue[player][len(MessageQueue[player])] = nil
         --
         ShowFlyingSign(msg_info.msg, msg_info.obj, player, 5.0)
-        sleep(msg_info.delay)
+        sleep(msg_info.delay * 2)
       end
       sleep()
     end
