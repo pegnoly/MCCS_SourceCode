@@ -41,7 +41,8 @@ custom_ability_common = {
     RegisterUniqueAbilityForHero = function (id, detector, activator, hero)
         custom_ability_common.unique_ability_state_detectors[id] = detector
         custom_ability_common.ability_activators[id] = activator
-        custom_ability_common.ability_states_for_heroes[id] = { [hero] = CUSTOM_ABILITY_NOT_PRESENT }
+        custom_ability_common.ability_states_for_heroes[id] = {}
+        custom_ability_common.ability_states_for_heroes[id][hero] = CUSTOM_ABILITY_NOT_PRESENT
     end,
 
     AbilityUpdateThread = 

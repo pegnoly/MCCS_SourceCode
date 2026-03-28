@@ -123,10 +123,14 @@ Dialog =
                 end
             end
         end
-        -- print("Dialog.Action called with options: ", options)
+
+        local text = type(active_dialog.options[active_dialog.state][0]) == "string" and
+            active_dialog.path..active_dialog.options[active_dialog.state][0]..".txt" or 
+            active_dialog.options[active_dialog.state][0]
+            
         Dialog.answer_for_player[player] = 6
         TalkBoxForPlayers(GetPlayerFilter(player), active_dialog.icon, nil,
-                        active_dialog.path..active_dialog.options[active_dialog.state][0]..".txt", nil,
+                        text, nil,
                         'Dialog.Callback', 1,
                         active_dialog.path..active_dialog.title..'.txt',
                         active_dialog.path..active_dialog.select_text..'.txt', 
