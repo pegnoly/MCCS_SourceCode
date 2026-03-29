@@ -101,7 +101,6 @@ Dialog =
             if active_dialog.options[active_dialog.state][i] then
                 ---@type DialogOption | string
                 local option = active_dialog.options[active_dialog.state][i]
-                print("Processing option: ", option)
                 if option.is_enabled then
                     ans_num = ans_num + 1
                     if type(option.answer) == "string" then
@@ -111,7 +110,8 @@ Dialog =
                         local p = {}
                         for k, v in option.answer do
                             if k ~= 1 then
-                                if type(v) == "string" then
+                                local var_type = type(v)
+                                if var_type == "string" or var_type == "number" then
                                     table.push(p, ""..k.." = "..v)     
                                 else
                                     local ip = {}
@@ -125,7 +125,6 @@ Dialog =
                                     local cc = itp.Concat(', ')
                                     local vc = '"'..v[1]..'"'
                                     local sp = "Dialog.string_to_parse = '{"..vc.."; "..cc.."}'"
-                                    print("Inner string to parse: ", sp)
                                     parse(sp)()
                                     table.push(p, ""..k.." = "..Dialog.string_to_parse)
                                 end
@@ -134,7 +133,6 @@ Dialog =
                         ---@type Iterator
                         local it = Iterator(p)
                         local s = 'Dialog.string_to_parse = {"'..t..'"; '..it.Concat(", ")..'}'
-                        print("Final string to parse: ", s)
                         parse(s)()
                         options[ans_num] = Dialog.string_to_parse
                     end
