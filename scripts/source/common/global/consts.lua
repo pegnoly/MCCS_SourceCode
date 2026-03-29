@@ -74,12 +74,15 @@ function pcall(func, ...)
   end
 end
 
--- ����������� ������ � ���������, ������� ����� ������� MessageBox'�� � �.�(RedHeavenHero)
-function rtext(message)
+---@param message string
+---@param as_string 1|nil
+---@return table
+function rtext(message, as_string)
+  as_string = as_string or nil
   local t = string.spread(message)
   local answer = {'Text/rawtext/message.txt'}
   for i = 1, length(t) - 1 do
-    answer['l'.. i] = '/Text/rawtext/'..string.bytes[t[i]]..'.txt'
+    answer['l'.. i] = as_string and '"/Text/rawtext/'..string.bytes[t[i]]..'.txt"' or '/Text/rawtext/'..string.bytes[t[i]]..'.txt'
   end
   return answer
 end
