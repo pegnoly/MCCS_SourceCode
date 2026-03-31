@@ -6,7 +6,8 @@
     "Lua.diagnostics.globals": [
         "inventory",
         "MCCS_CREATURE_GENERATED_TABLE",
-        "CREATURE_PLACEHOLDER"
+        "CREATURE_PLACEHOLDER",
+        "MCCS_GENERATED_HEROES_TABLE"
     ],
     "Lua.diagnostics.disable": [
         "exp-in-action",

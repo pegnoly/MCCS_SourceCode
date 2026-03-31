@@ -34,7 +34,7 @@ Iterator = function (items)
         ---@param predicate IteratorPredicate
         Filter = function(predicate)
             local items = %items
-            local result, n = {}, 0
+            local result, n = {}, 1
             for _, item in items do
                 if predicate(item) then
                     result[n] = item
@@ -48,7 +48,7 @@ Iterator = function (items)
         ---@param converter IteratorConverter
         Map = function(converter)
             local items = %items
-            local result, n = {}, 0
+            local result, n = {}, 1
             for _, item in items do
                 local converted = converter(item)
                 result[n] = converted
@@ -61,7 +61,7 @@ Iterator = function (items)
         ---@param converter_nullable IteratorConverterNullable
         FilterMap = function (converter_nullable)
             local items = %items
-            local result, n = {}, 0
+            local result, n = {}, 1
             for _, item in items do
                 local converted = converter_nullable(item)
                 if converted then
@@ -100,7 +100,7 @@ Iterator = function (items)
         ---@param count number
         TakeFirst = function (count)
             local items = %items
-            local result, n = {}, 0
+            local result, n = {}, 1
             for _, item in items do
                 if n == count then
                     break

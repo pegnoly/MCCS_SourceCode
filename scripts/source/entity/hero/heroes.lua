@@ -456,12 +456,12 @@ Hero =
                 local crt_removed = curr_crt >= math.abs(arg[i + 1]) and math.abs(arg[i + 1]) or curr_crt
                 if crt_removed > 0 then
                     RemoveHeroCreatures(hero, arg[i], crt_removed)
-                    MessageQueue.AddMessage(GetObjectOwner(hero), {'/Text/Default/remove_creature.txt'; name = Creature.Params.Name(arg[1]), num = crt_removed}, hero, 5.0)
+                    MessageQueue.AddMessage(GetObjectOwner(hero), {'/Text/Default/remove_creature.txt'; name = Creature.Params.Name(arg[i]), num = crt_removed}, hero, 5.0)
                     sleep(12)
                 end
                 elseif arg[i + 1] ~= 0 then
                     AddHeroCreatures(hero, arg[i], arg[i + 1])
-                    MessageQueue.AddMessage(GetObjectOwner(hero), {'/Text/Default/add_creature.txt'; name = Creature.Params.Name(arg[1]), num = arg[i + 1]}, hero, 5.0)
+                    MessageQueue.AddMessage(GetObjectOwner(hero), {'/Text/Default/add_creature.txt'; name = Creature.Params.Name(arg[i]), num = arg[i + 1]}, hero, 5.0)
                     sleep(12)
                 end
             end
@@ -572,6 +572,87 @@ Hero =
             end
             return answer
         end,
+
+        MaxUpgraded = 
+        ---@param hero string
+        ---@param town TownType
+        ---@param tier number
+        ---@param count number
+        function (hero, town, tier, count)
+            local tier_data = Hero.CreatureInfo.GetByTier(hero, town, tier)
+            if not tier_data then
+                Hero.CreatureInfo.Add(hero, TIER_TABLES[town][tier][2], count)
+            end
+            ---@type { creature: number, count: number} []
+            local counts = {}
+            local current_max_count = -1
+            for _, creature in tier_data do
+                if creature ~= TIER_TABLES[town][tier][1] then
+                    local count = GetHeroCreatures(hero, creature)
+                    if count > current_max_count then
+                        current_max_count = count
+                    end
+                    table.push(counts, { creature = creature, count = count })
+                end
+            end
+            if len(counts) == 0 then
+                Hero.CreatureInfo.Add(hero, TIER_TABLES[town][tier][2], count)
+            else
+                local creatures_to_select = Iterator(counts)
+                    .Filter(function (item)
+                        local max_count = %current_max_count
+                        if item.count == max_count then
+                            return 1
+                        end
+                        return nil
+                    end)
+                    .Collect()
+                local actual_creature = Random.FromTable(creatures_to_select)
+                Hero.CreatureInfo.Add(hero, actual_creature.creature, count)
+            end
+        end,
+
+        MaxUpgradedWithReturning = 
+        ---@param hero string
+        ---@param town TownType
+        ---@param tier number
+        ---@return number
+        function (hero, town, tier)
+            local tier_data = Hero.CreatureInfo.GetByTier(hero, town, tier)
+            if not tier_data then
+                local result = TIER_TABLES[town][tier][2]
+                return result
+            end
+            ---@type { creature: number, count: number} []
+            local counts = {}
+            local current_max_count = -1
+            for _, creature in tier_data do
+                if creature ~= TIER_TABLES[town][tier][1] then
+                    local count = GetHeroCreatures(hero, creature)
+                    if count > current_max_count then
+                        current_max_count = count
+                    end
+                    table.push(counts, { creature = creature, count = count })
+                end
+            end
+            if len(counts) == 0 then
+                local result = TIER_TABLES[town][tier][2]
+                return result
+            else
+                local creatures_to_select = Iterator(counts)
+                    .Filter(function (item)
+                        local max_count = %current_max_count
+                        if item.count == max_count then
+                            return 1
+                        end
+                        return nil
+                    end)
+                    .Collect()
+                local actual_creature = Random.FromTable(creatures_to_select)
+                local result = actual_creature.creature
+                return result
+            end
+        end
     },
 
     SpellInfo =
