@@ -1,5 +1,5 @@
 ---@generic TSource, TProduct
----@alias IteratorPredicate fun(item: TSource): 1|nil
+---@alias IteratorPredicate fun(item: TSource): 1|nil|boolean
 ---@alias IteratorConverter fun(item: TSource): TProduct
 ---@alias IteratorConverterNullable fun(item: TSource): TProduct|nil
 ---@alias IteratorComparer fun(item: TSource): number
@@ -7,7 +7,7 @@
 ---@alias IteratorChecker fun(method: IteratorPredicate): 1|nil
 ---@alias IteratorSelector fun(count: number): Iterator
 ---@alias IteratorConcatenator fun(separator: string): string
----@alias IteratorSingleItemSelector fun(comparer: IteratorComparer): TSource
+---@alias IteratorSingleItemSelector fun(comparer: IteratorComparer): TSource|nil
 ---@alias IteratorCollector fun(): TSource[]
 
 ---@class Iterator<TSource>
@@ -21,9 +21,10 @@
 ---@field TakeFirst IteratorSelector Возвращает итератор из первых N элементов исходного итератора
 ---@field TakeRandom IteratorSelector Возвращает итератор из N случайных неповторяющихся элементов исходного итератора
 ---@field Concat IteratorConcatenator Преобразует элементы итератора в строку
+---@field First IteratorSingleItemSelector Возвращает единственный элемент итератора, имеющий совпадение по заданному условию
 ---@field MaxBy IteratorSingleItemSelector Возвращает единственный элемент итератора, имеющий максимальное значение по заданному условию
 ---@field MinBy IteratorSingleItemSelector Возвращает единственный элемент итератора, имеющий минимальное значение по заданному условию
----@field Chunks IteratorSelector Возвращает итератор из массивов, полученных путем разбиения исходного на равные части
+---@field Chunks IteratorSelector 
 Iterator = {}
 
 ---@overload fun(items: any[]): Iterator
@@ -34,7 +35,7 @@ Iterator = function (items)
         ---@param predicate IteratorPredicate
         Filter = function(predicate)
             local items = %items
-            local result, n = {}, 1
+            local result, n = {}, 0
             for _, item in items do
                 if predicate(item) then
                     result[n] = item
@@ -48,7 +49,7 @@ Iterator = function (items)
         ---@param converter IteratorConverter
         Map = function(converter)
             local items = %items
-            local result, n = {}, 1
+            local result, n = {}, 0
             for _, item in items do
                 local converted = converter(item)
                 result[n] = converted
@@ -61,7 +62,7 @@ Iterator = function (items)
         ---@param converter_nullable IteratorConverterNullable
         FilterMap = function (converter_nullable)
             local items = %items
-            local result, n = {}, 1
+            local result, n = {}, 0
             for _, item in items do
                 local converted = converter_nullable(item)
                 if converted then
@@ -100,7 +101,7 @@ Iterator = function (items)
         ---@param count number
         TakeFirst = function (count)
             local items = %items
-            local result, n = {}, 1
+            local result, n = {}, 0
             for _, item in items do
                 if n == count then
                     break
@@ -153,6 +154,17 @@ Iterator = function (items)
                 end
             end
             return result
+        end,
+
+        ---@param comparer IteratorComparer
+        First = function (comparer)
+            local items = %items
+            for k, v in items do
+                if k and v and comparer(v) then
+                    return v
+                end 
+            end
+            return nil
         end,
 
         ---@param comparer IteratorComparer
