@@ -1,14 +1,29 @@
--- ����� ������ ���
+---@alias EventPriorityLevel
+---|`EVENT_PRIORITY_HIGH`
+---|`EVENT_PRIORITY_DEFAULT`
+---|`EVENT_PRIORITY_LOW`
+EVENT_PRIORITY_HIGH = 1
+EVENT_PRIORITY_DEFAULT = 2
+EVENT_PRIORITY_LOW = 3
+
+---@class NewDayEventListener
+---@field func fun(day: number)
+---@field priority EventPriorityLevel
+NewDayEventListener = {}
+
 NewDayEvent = {
-  this_day_already_invoked_listeners = {},
-  listeners_waiting = {}
 }
 
+---@type table<string, NewDayEventListener>
 NewDayEvent.listeners = {}
 
 NewDayEvent.AddListener =
-function(desc, func)
-  NewDayEvent.listeners[desc] = func
+---@param desc string
+---@param func fun(day: number)
+---@param priority? EventPriorityLevel
+function(desc, func, priority)
+  priority = priority or EVENT_PRIORITY_DEFAULT
+  NewDayEvent.listeners[desc] = { func = func, priority = priority }
 end
 
 NewDayEvent.RemoveListener =
@@ -16,53 +31,39 @@ function(desc)
   NewDayEvent.listeners[desc] = nil
 end
 
-NewDayEvent.InvokeAfter = 
-function (prev_listener, this_listener)
-  if not NewDayEvent.listeners_waiting[this_listener] then
-    NewDayEvent.listeners_waiting[this_listener] = {}
-  end
-  local length = NewDayEvent.listeners_waiting[this_listener]
-  NewDayEvent.listeners_waiting[this_listener][length + 1] = prev_listener
-end
-
-NewDayEvent.FinishInvoking = 
-function (listener)
-  NewDayEvent.this_day_already_invoked_listeners[listener] = 1
-end
-
 NewDayEvent.Invoke =
 function(day)
-  NewDayEvent.this_day_already_invoked_listeners = {}
-  for desc, func in NewDayEvent.listeners do
-    if NewDayEvent.listeners_waiting[desc] then
-      startThread(
-      function ()
-        local desc = %desc
-        while 1 do
-          local listeners_done = 0
-          local listeners_done_needed = len(NewDayEvent.listeners_waiting[desc])
-          for i, listener in NewDayEvent.listeners_waiting[desc] do
-            if NewDayEvent.this_day_already_invoked_listeners[listener] then
-              listeners_done = listeners_done + 1
-            end
-          end
-          if listeners_done == listeners_done_needed then
-            break
-          end
-          sleep()
-        end
-        startThread(NewDayEvent.RunHandler, desc, %func, %day)
-      end)
+  local hpe = {}
+  local dpe = {}
+  local lpe = {}
+  ---@param listener_data NewDayEventListener
+  for desc, listener_data in NewDayEvent.listeners do
+    if listener_data.priority == EVENT_PRIORITY_HIGH then
+      hpe[desc] = 1
+    elseif listener_data.priority == EVENT_PRIORITY_DEFAULT then
+      dpe[desc] = 1
     else
-      startThread(NewDayEvent.RunHandler, desc, func, day)
+      lpe[desc] = 1 
     end
   end
-end
 
-NewDayEvent.RunHandler = 
-function(desc, func, day)
-	func(day)
-	NewDayEvent.this_day_already_invoked_listeners[desc] = 1
+  ---@param desc string
+  for desc, _ in hpe do
+    local listener = NewDayEvent.listeners[desc]
+    listener.func(day)
+  end
+
+  ---@param desc string
+  for desc, _ in dpe do
+    local listener = NewDayEvent.listeners[desc]
+    listener.func(day)
+  end
+
+  ---@param desc string
+  for desc, _ in lpe do
+    local listener = NewDayEvent.listeners[desc]
+    listener.func(day)
+  end
 end
 
 -- ����� ����������� ���

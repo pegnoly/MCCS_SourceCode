@@ -89,22 +89,24 @@ FightGenerator = {
         ---@type FightSingleStackModel[]
         local stacks_data, n = {}, 1
         for i, stack_type in data.stack_count_generation_logic do
-            local creature = data.army_getters[i]()
-            local count
-            if stack_type == UNIT_COUNT_GENERATION_MODE_POWER_BASED then
-                local stack_power = data.army_base_count_data[i][diff]
-                if data.army_counts_grow and length(data.army_counts_grow) > 0 and data.army_counts_grow[i] and data.army_counts_grow[i][diff] then
-                    stack_power = stack_power + data.army_counts_grow[i][diff] * week
+            if data.army_base_count_data[i][diff] and data.army_base_count_data[i][diff] > 0 then
+                local creature = data.army_getters[i]()
+                local count
+                if stack_type == UNIT_COUNT_GENERATION_MODE_POWER_BASED then
+                    local stack_power = data.army_base_count_data[i][diff]
+                    if data.army_counts_grow and length(data.army_counts_grow) > 0 and data.army_counts_grow[i] and data.army_counts_grow[i][diff] then
+                        stack_power = stack_power + data.army_counts_grow[i][diff] * week
+                    end
+                    count = ceil(stack_power / Creature.Params.Power(creature)) 
+                else 
+                    count = data.army_base_count_data[i][diff]
+                    if data.army_counts_grow and data.army_counts_grow[i] and data.army_counts_grow[i][diff] then
+                        count = count + data.army_counts_grow[i][diff] * week
+                    end
                 end
-                count = ceil(stack_power / Creature.Params.Power(creature)) 
-            else 
-                count = data.army_base_count_data[i][diff]
-                if data.army_counts_grow and data.army_counts_grow[i] and data.army_counts_grow[i][diff] then
-                    count = count + data.army_counts_grow[i][diff] * week
-                end
+                stacks_data[n] = {creature = creature, count = count}
+                n = n + 1
             end
-            stacks_data[n] = {creature = creature, count = count}
-            n = n + 1
         end
 
         return stacks_data

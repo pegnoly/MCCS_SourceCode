@@ -18,6 +18,7 @@ function(obj, hero, player)
         sleep()
       end
     end
+    print("Quest name: ", Quest.Names[obj])
     MessageQueue.AddMessage(player, {"/Text/Default/Quest/quest_started.txt"; q_name = Quest.Names[obj]}, hero, 6.0)
   end
 end

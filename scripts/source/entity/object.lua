@@ -90,5 +90,34 @@ Object =
     local dist2 = y2 - y1
     local answer = sqrt(dist1 * dist1 + dist2 * dist2)
     return floor(answer)
+  end,
+
+  DistanceFromPoint = 
+  ---@param obj string имя объекта
+  ---@param point { x: number, y: number, f: MapLevel } точка на карте
+  function (obj, point)
+    local x, y, f = GetObjectPosition(obj)
+    if f ~= point.f then
+      return nil
+    end
+
+    local dx = point.x - x
+    local dy = point.y - y
+    local answer = sqrt(dx * dx + dy * dy)
+    return floor(answer)
+  end,
+
+  DistanceBetweenPoints =
+  ---@param p1 { x: number, y: number, f: MapLevel } первая точка
+  ---@param p2 { x: number, y: number, f: MapLevel } вторая точка
+  function (p1, p2)
+    if p1.f ~= p2.f then
+      return nil
+    end
+
+    local dx = p2.x - p1.x
+    local dy = p2.y - p1.y
+    local answer = sqrt(dx * dx + dy * dy)
+    return floor(answer)
   end
 }

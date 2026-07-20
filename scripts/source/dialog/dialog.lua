@@ -111,7 +111,9 @@ Dialog =
                         for k, v in option.answer do
                             if k ~= 1 then
                                 local var_type = type(v)
-                                if var_type == "string" or var_type == "number" then
+                                if var_type == "string" then 
+                                    table.push(p, ""..k.." = '"..v.."'")     
+                                elseif var_type == "number" then
                                     table.push(p, ""..k.." = "..v)     
                                 else
                                     local ip = {}
@@ -143,7 +145,7 @@ Dialog =
         local text = type(active_dialog.options[active_dialog.state][0]) == "string" and
             active_dialog.path..active_dialog.options[active_dialog.state][0]..".txt" or 
             active_dialog.options[active_dialog.state][0]
-            
+           
         Dialog.answer_for_player[player] = 6
         TalkBoxForPlayers(GetPlayerFilter(player), active_dialog.icon, nil,
                         text, nil,
@@ -160,7 +162,6 @@ Dialog =
             sleep()
         end
         local ans = Dialog.answer_for_player[player]
-        -- print("Answer: ", ans)
         local next_state
         if ans < 1 then
             next_state = 0
@@ -170,11 +171,9 @@ Dialog =
                 if active_dialog.options[active_dialog.state][i] then
                     ---@type DialogOption | string
                     local option = active_dialog.options[active_dialog.state][i]
-                    -- print("Validating option: ", option)
                     if option.is_enabled then
                         check = check + 1
                         if check == ans then
-                            -- print("Option was checked")
                             next_state = option.next_state
                             ans = i
                             break
@@ -183,7 +182,6 @@ Dialog =
                 end
             end
         end
-        -- print("Next state: ", next_state)
         next_state = active_dialog.effect(player, active_dialog.state, ans, next_state)
         if next_state == 0 then
             return
